@@ -213,15 +213,21 @@ public class InputDati
 			return false;
 	  }
 	  
+	  //METODI CHE ERANO NELLA CLASSE CITTADINO, SPOSTATI IN MYLIB PERCHE' DI UTILITA' GENERALE
 	  public static String creaNome(){   
-
-			String nome;
+		  String nome;
 			do{
-				nome = mylib.InputDati.leggiStringaNonVuota(Constants.NOME_CITTADINO); //VERIFICO CHE LA STRINGA INSERITA NON E' VUOTA
+				nome =  leggiStringaNonVuota(Constants.NOME_CITTADINO); //VERIFICO CHE LA STRINGA INSERITA NON E' VUOTA
 			}while(!(UtilitaControllo.controlloStringa(nome))); //VERIFICO CHE LA STRINGA CONTENGA SOLO LETTERE
-
 			return nome;
-		}
+	  }
+	  
+	  public static int creaEta(){
+		  int eta = leggiIntero(ConstantsCittadino.ETA, ConstantsCittadino.LIMITE_MIN_ETA, ConstantsCittadino.LIMITE_MAX_ETA);
+		  return eta;
+	  }
+	  
+	  
 
 }
 

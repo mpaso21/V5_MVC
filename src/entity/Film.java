@@ -1,7 +1,8 @@
 package entity;
 
-import mylib.Constants;
-import mylib.UtilitaCreazioneCampi;
+
+import mylib.ConstantsRisorsa;
+
 /**
  *  Classe Film rappresenta un tipo di Risorsa. 
  * @author Marika
@@ -12,13 +13,8 @@ public class Film extends Risorsa {
 	private int durata;
 	private int annoDiUscita;
 	private String casaProduttrice;
-	private String lingua;
+	//COSTANTI DI FILM SPOSTATE IN UN APPOSITA CLASSE CONSTANTS LIBRO -> REFACTOR MOVE FIELD
 
-	
-//	VALORE CORRETTO	= 30 GG
-public static final int DURATA_MAX_PRESTITO = 5; 
-public static final int INTERVALLO_RICHIESTA_PROROGA = 3;
-public static final int NUM_MAX_PRESTITI = 3;
 	/**	
 	 * Costruttore Film. Ciascun film è costituito da un titolo, regista, durata,
 	 * anno di uscita, casa produttrice, lingua e genere.
@@ -32,26 +28,20 @@ public static final int NUM_MAX_PRESTITI = 3;
 	 */
 	public Film(String nome ,String regista,int durata, 
 			int annoDiUscita, String casaProduttrice, String lingua,String genere){
-		super(nome,genere);
-		super.setTipo(Constants.FILM);
+		super(nome,genere, lingua); //COSTRUTTORE CAMBIATO PERCHE' HO CAMBIATO QUELLO DI RISORSA
+		super.setTipo(ConstantsRisorsa.FILM);//SETTO TIPO A FILM
 		this.regista = regista;
 		this.durata = durata;
 		this.annoDiUscita = annoDiUscita;
 		this.casaProduttrice = casaProduttrice;
-		this.lingua = lingua;
-	
-	
 	}
 
-
-
-	public String getRegista() {
-		return regista;
-	}
-
-	public void setRegista(String regista) {
-		this.regista = regista;
-	}
+	//METODO STATIC CREA FILM CREA IL LIBRO TRAMITE INPUT. SPOSTATO IN FILMVIEW
+	//REFACTOR ->MOVE METHOD. APPARTIENE ALLA VIEW.ANCHE METODO TO STRING, STRINGA STORICO
+	// E STRINGA STORICO INTESTAZIONE
+		
+		
+		//METODO EQUALS APPARTIENE A FILM.
 	/**
 	 * Metodo equals utile per sfruttare il metodo remove by Object e non by Index
 	 * utilizzato con gli ArrayList.
@@ -67,9 +57,14 @@ public static final int NUM_MAX_PRESTITI = 3;
 		}
 		return false;
 	}
+	
+	public String getRegista() {
+		return regista;
+	}
 
-	
-	
+	public void setRegista(String regista) {
+		this.regista = regista;
+	}
 
 	public int getDurata() {
 		return durata;
@@ -83,9 +78,6 @@ public static final int NUM_MAX_PRESTITI = 3;
 		return casaProduttrice;
 	}
 
-	public String getLingua() {
-		return lingua;
-	}
 
 	public void setDurata(int durata) {
 		this.durata = durata;
@@ -99,9 +91,6 @@ public static final int NUM_MAX_PRESTITI = 3;
 		this.casaProduttrice = casaProduttrice;
 	}
 
-	public void setLingua(String lingua) {
-		this.lingua = lingua;
-	}
-
 	
+
 }

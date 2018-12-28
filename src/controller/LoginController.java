@@ -1,79 +1,54 @@
 package controller;
 
 
-import controller.entitycontroller.RisorsaEntityController;
-import model.FilmModel;
-import model.LibroModel;
-import mylib.Constants;
-import mylib.InputDati;
-import mylib.MyMenu;
-import view.FilmView;
-import view.LibroView;
+import java.util.HashMap;
+import java.util.Map;
 
-public class LoginController implements Controller {
-		
-	String titolo = "OPZIONI DI LOGIN";
-	String opzioni[] = {
-	"Registra nuovo fruitore",
-	"Accedi come fruitore",
-	"Accedi come operatore"};
-	MyMenu m = new MyMenu(titolo, opzioni);
+import controller.entitycontroller.PrestitoEntityController;
+import controller.entitycontroller.RisorsaEntityController;
+import model.prestito.PrestitoModel;
+import model.risorsa.FilmModel;
+import model.risorsa.LibroModel;
+import mylib.ConstantsRisorsa;
+import mylib.MyMenu;
+import view.prestito.PrestitoFilmView;
+import view.prestito.PrestitoLibroView;
+import view.risorsa.FilmView;
+import view.risorsa.LibroView;
+
+public class LoginController extends CreatoreMenu {
+
+	MyMenu m1 = crea();
 	boolean uscita = false;
 
 	
 	private FruitoreController fruitore;
 	private OperatoreController operatore;
-	private RisorsaEntityController filmController;
-	private RisorsaEntityController libroController;
-	
+
+	private Map<String, RisorsaEntityController> risorseEntityControllerMap;
+	private Map<String, PrestitoEntityController> prestitiEntityControllerMap;
 	
 	public LoginController(){
-		
-		filmController = new RisorsaEntityController(new FilmView(), new FilmModel());
-		libroController = new RisorsaEntityController(new LibroView(), new LibroModel());
+		//CREO CONTROLLER MENU PRINCIPALI
 		fruitore = new FruitoreController(this);
 		operatore = new OperatoreController(this);
+		
+		//CREO ANCHE SOTTOCONTROLLER NECESSARI PER IL FUNZIONAMENTO DEL MENU PRINCIPALES
+		this.risorseEntityControllerMap = new HashMap<>();
+		this.prestitiEntityControllerMap = new HashMap<>();
+
+		this.risorseEntityControllerMap.put(ConstantsRisorsa.LIBRO, new RisorsaEntityController(new LibroView(), new LibroModel()));
+		this.risorseEntityControllerMap.put(ConstantsRisorsa.FILM,  new RisorsaEntityController(new FilmView(), new FilmModel()));
+		
+		this.prestitiEntityControllerMap.put(ConstantsRisorsa.LIBRO, new PrestitoEntityController(new PrestitoLibroView(), new PrestitoModel()));
+		this.prestitiEntityControllerMap.put(ConstantsRisorsa.FILM,  new PrestitoEntityController(new PrestitoFilmView(), new PrestitoModel()));
 	}
-
-
-
-	public FruitoreController getFruitore() {
-		return fruitore;
-	}
-
-
-	public OperatoreController getOperatore() {
-		return operatore;
-	}
-
-
-	public void setFruitore(FruitoreController fruitore) {
-		this.fruitore = fruitore;
-	}
-
-
-	public void setOperatore(OperatoreController operatore) {
-		this.operatore = operatore;
-	}
-
-	
-
-	public RisorsaEntityController getFilmController() {
-		return filmController;
-	}
-
-
-
-	public RisorsaEntityController getLibroController() {
-		return libroController;
-	}
-
 
 
 	public void init(){
-		
+
 		do{
-			switch(m.scegli()){
+			switch(m1.scegli()){
 			case 1:
 				getFruitore().aggiungi();
 				break;
@@ -88,6 +63,69 @@ public class LoginController implements Controller {
 				break;
 			}
 		}while(uscita != true);
+	}
+
+
+	@Override
+	public String titolo() {
+		String titolo = "OPZIONI DI LOGIN";
+		return titolo;
+	}
+
+
+	@Override
+	public String[] opzioni() {
+		String opzioni[] = {
+				"Registra nuovo fruitore",
+				"Accedi come fruitore",
+				"Accedi come operatore"};
+		return opzioni;
+	}
+	
+
+	public FruitoreController getFruitore() {
+		return fruitore;
+	}
+
+	public OperatoreController getOperatore() {
+		return operatore;
+	}
+
+	
+	public Map<String, RisorsaEntityController> getRisorseEntityControllerMap() {
+		return risorseEntityControllerMap;
+	}
+
+
+	public Map<String, PrestitoEntityController> getPrestitiEntityControllerMap() {
+		return prestitiEntityControllerMap;
+	}
+
+
+	public RisorsaEntityController getFilmController() {
+		return risorseEntityControllerMap.get(ConstantsRisorsa.FILM);
+	}
+
+	public RisorsaEntityController getLibroController() {
+		return risorseEntityControllerMap.get(ConstantsRisorsa.LIBRO);
+	}
+
+	public PrestitoEntityController getPrestitoLibroController() {
+		return prestitiEntityControllerMap.get(ConstantsRisorsa.LIBRO);
+	}
+
+	public PrestitoEntityController getPrestitoFilmController() {
+		return prestitiEntityControllerMap.get(ConstantsRisorsa.FILM);
+	}
+	
+	
+	//GENERICI
+	public RisorsaEntityController getRisorsaControllerByKey(String k){
+		return this.risorseEntityControllerMap.get(k);
+	}
+	
+	public PrestitoEntityController getPrestitoControllerByKey(String k){
+		return this.prestitiEntityControllerMap.get(k);
 	}
 }
 

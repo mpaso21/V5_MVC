@@ -1,8 +1,8 @@
 package entity;
 
 import java.time.LocalDateTime;
-
-import action.CalcoliPerPrestito;
+import action.CalcoloFinePrestito;
+import action.Calcolo;
 import mylib.Data;
 /**
  *  La classe Prestito rappresenta un prestito di una determinata
@@ -12,7 +12,7 @@ import mylib.Data;
  */
 public class Prestito {
 
-	private String tipoRisorsa;
+	//private String tipoRisorsa;
 	private Risorsa r;
 	private String nomeFruitore;
 	private LocalDateTime inizio_prestito ;
@@ -21,7 +21,7 @@ public class Prestito {
 	/**
 	 *  Costruttore Prestito. Un prestito è costituito da una risorsa, da una data
 	 *  di inizio prestito, da una data di fine prestito e da un numero di rinnovo
-	 *  associato alla risorsa.
+	 *  associato alla risorsa, e dal nome del fruitore.
 	 * @param r
 	 */
 	public Prestito(Risorsa r, String nomeFruitore){ 
@@ -30,55 +30,26 @@ public class Prestito {
 		inizio_prestito = Data.creaData(); 
 		fine_prestito = calcolo_fine_prestito();
 		numero_rinnovo = 0;
-		this.setTipoRisorsa(r.getTipo());//SBAGLIA
+	//	this.setTipoRisorsa(r.getTipo());
 	}
 	
+	/**
+	 * Metodo calcolo_fine_prestito richiama il metodo calcolo della classe
+	 * CalcoloFinePrestito che ha la responsabilià di calcolare, dato un prestito,
+	 * la fine del prestito.
+	 * @return
+	 */
+	//AGGIUNTA METODO CHE RICHIAMA UTILITA' CALCOLO FINE PRESTITO
+	//CALCOLO METODO PRESCRITTI PROROGA SPOSTATO IN AZIONE PROROGA -> REFACTOR MOVE METHOD
+	
+	//METODO STAMPA PRESTITO -> IN VIEW
+	//METODO TO STRING LIBRO /FILM -> IN VIEW
 	public LocalDateTime calcolo_fine_prestito(){
-		CalcoliPerPrestito calcoli = new CalcoliPerPrestito(this);
-		return calcoli.calcolo_fine_prestito();
+		Calcolo calcoloFine = new CalcoloFinePrestito(this);
+		return calcoloFine.calcolo();
 	}
-	
-	
-//	/**
-//	 * Metodo calcolo_fine_prestito permette di calcolare la data di 
-//	 *  scadenza del prestito che è esattamente 30 giorni dopo la
-//	 *   data di inizio prestito.
-//	 * @return
-//	 */
-//	public LocalDateTime calcolo_fine_prestito(){
-//		//METODO CORRETTO: scadenza 30 giorni dalla data di inizio prestito
-//		//fine_prestito = Data.cambiaGiorno(30, inizio_prestito);
-//		//DIMOSTRAZIONE METODO: scadenza 5 minuti dopo quella di iscrizione
-//		if(r instanceof Libro){
-//			fine_prestito = Data.cambiaMinuto(Libro.DURATA_MAX_PRESTITO, inizio_prestito);
-//		}		
-//		else{
-//			fine_prestito = Data.cambiaMinuto(Film.DURATA_MAX_PRESTITO, inizio_prestito);
-//		}
-//		return fine_prestito;
-//	}
-//	
-//	/**
-//	 * Metodo calcoloTerminiPrescrittiProroga calcola, data la data di scadenza del prestito,
-//	 *  l'intervallo di tempo entro cui è richiedibile la proroga del prestito.
-//	 *  In questo caso è possibile richiedere la proroga non prima dei 3 giorni precedenti
-//	 *  alla scadenza.
-//	 * @return
-//	 */
-//	public LocalDateTime calcoloTerminiPrescrittiProroga(){
-//		LocalDateTime d;
-//		//METODO CORRETTO: intervallo proroga non prima dei 3 giorni precedenti la scadenza
-//		//d = Data.cambiaGiorno(3, fine_prestito);
-//		//DIMOSTRAZIONE METODO: intervallo proroga non prima dei 3 minuti precedenti la scadenza
-//		if(this.getR() instanceof Libro){
-//			d  = Data.menoMinuto(Libro.INTERVALLO_RICHIESTA_PROROGA, this.getFine_prestito());
-//			return d;
-//		}
-//		else{
-//			d  = Data.menoMinuto(Film.INTERVALLO_RICHIESTA_PROROGA,this.getFine_prestito());
-//			return d;
-//		}
-//	}
+
+	//METODO RIMASTO UGUALE APPARTENENTE A PRESTITO
 	/**
 	 * Metodo rinnovo controlla la possibilità di effettuare un rinnovo
 	 * di tale prestito. Il rinnovo può essere richiesto una sola volta.
@@ -133,11 +104,12 @@ public class Prestito {
 	}
 
 	public String getTipoRisorsa() {
-		return tipoRisorsa;
+		return r.getTipo();
 	}
 
-	public void setTipoRisorsa(String tipoRisorsa) {
-		this.tipoRisorsa = tipoRisorsa;
-	}
+	
+//	public void setTipoRisorsa(String tipoRisorsa) {
+//		this.tipoRisorsa = tipoRisorsa;
+//	}
 	
 }

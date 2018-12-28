@@ -18,7 +18,7 @@ public class Cittadino {
 	 * @param eta
 	 */
 	public Cittadino(String nome, int eta){
-		this.nome = nome; //HO SPOSTATO CREA NOME, CREA ETA' IN MY LIB -> MOVE METHOD
+		this.nome = nome; //HO SPOSTATO CREA NOME, CREA ETA' IN MY LIB -> REFACTOR MOVE METHOD
 		this.eta = eta;
 	}
 

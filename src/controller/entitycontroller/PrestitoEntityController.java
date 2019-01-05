@@ -1,9 +1,8 @@
 package controller.entitycontroller;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import entity.Prestito;
 import model.prestito.PrestitoModel;
 import view.prestito.PrestitoView;
@@ -20,36 +19,27 @@ public class PrestitoEntityController {
 		this.prestitoModel = prestitoModel;
 	}
 
-//TROPPI PARAMETRI
+
+	//METODO DELEGATI
 	public void aggiungiPrestito(Prestito p,List<Prestito> prestitiFruitore,List<Prestito> prestitiStoriciFruitore ){
 		prestitoModel.aggiungiPrestito(p,prestitiFruitore, prestitiStoriciFruitore);
 	}
 
 	//SELEZIONA PRESTITO FILTRATO PER LIBRI E FILM
-	//POSSO FARLO ANCHE NORMALE CIOE' SELEZIONA DA TUTTO 
-
+	//IN PRESTITO ENTITY CONTROLLER PERCHE' MISCHIA VIEW E LOGICA
 	public Prestito selezionaPrestitoConFiltro(String nome,List<Prestito> prestitiFruitore){
-		controlloScadenzaTuttiPrestitiFruitore(prestitiFruitore);
+		
 		if(!(prestitiFruitore.isEmpty())){
-			List <Prestito> prestitiFiltrati = filtraPrestito(nome, prestitiFruitore);
+			List <Prestito> prestitiFiltrati = filtraPrestitoPerRisorsa(nome, prestitiFruitore);
 			return prestitoView.seleziona(prestitiFiltrati);
 		}
 		else{
 			return null;
 		}
 	}
-	
-	public Prestito selezionaPrestito(List<Prestito> prestitiFruitore){
-		controlloScadenzaTuttiPrestitiFruitore(prestitiFruitore);
-		if(!(prestitiFruitore.isEmpty())){
-			return prestitoView.seleziona(prestitiFruitore);
-		}
-		else{
-			return null;
-		}
-	}
-	
-	public List<Prestito> filtraPrestito(String nome,List<Prestito> prestitiFruitore){
+
+	//PUO' ANDARE NEL MODEL
+	private List<Prestito> filtraPrestitoPerRisorsa(String nome,List<Prestito> prestitiFruitore){
 		List <Prestito> prestitiFiltrati = new ArrayList<Prestito>();
 		for(Prestito p: prestitiFruitore){
 			if(p.getTipoRisorsa().equalsIgnoreCase(nome)){
@@ -58,35 +48,28 @@ public class PrestitoEntityController {
 		}
 		return prestitiFiltrati;
 	}
-//POTRA' POI ESSERE TOLTO 
-	public void controlloScadenzaTuttiPrestitiFruitore (List<Prestito> prestitiFruitore){
-		prestitoModel.controlloScadenzaPrestitiFruitore(LocalDateTime.now(),prestitiFruitore);
-	}
 
+
+////POTRA' POI ESSERE TOLTO 
+//	public void controlloScadenzaTuttiPrestitiFruitore (List<Prestito> prestitiFruitore){
+//		prestitoModel.controlloScadenzaPrestitiFruitore(LocalDateTime.now(),prestitiFruitore);
+//	}
+
+	//METODI DELEGATI PER EVITARE TROPPI GET
 	public void stampaPrestiti(List<Prestito> prestiti){
 		prestitoView.stampaTutti(prestiti);
 	}
 
-
-	public void prestitiPerAnno(){
-		int valore = prestitoModel.prestitiPerAnno();
-		prestitoView.stampaNumPrestitiPerAnno(valore);
+	public int prestitiPerAnno(){
+		return prestitoModel.prestitiPerAnno();
+	}
+	
+	public int proroghePerAnno(){
+		return prestitoModel.proroghePerAnno();
 	}
 
-
-	public void proroghePerAnno(){
-		int valore = prestitoModel.proroghePerAnno();
-		prestitoView.stampaNumProroghePerAnno(valore);
-	}
-										//VA BENE QUI QUESTO METODO?
-	public void risorsaPiuPrestata(){	//PER ANNO CORRENTE
-		HashMap <String,Integer> a = prestitoModel.risorsaPiuPrestataPerAnno();
-		if(a.size() == 0){
-			prestitoView.stampaZeroPrestiti();
-		}
-		else{
-			prestitoView.stampaPerRisorsaPiuPrestata(a);;
-		}
+	public Map<String, Integer> getMappaRisorsaPiuPrestata(){
+		return prestitoModel.risorsaPiuPrestataPerAnno();
 	}
 	
 	public void limiteRaggiunto(){

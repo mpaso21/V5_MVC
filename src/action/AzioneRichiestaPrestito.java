@@ -1,7 +1,8 @@
 package action;
 
 
-import controller.LoginController;
+import controller.Controller;
+
 import controller.entitycontroller.PrestitoEntityController;
 import controller.entitycontroller.RisorsaEntityController;
 import entity.Fruitore;
@@ -13,15 +14,13 @@ import mylib.InputDati;
 public class AzioneRichiestaPrestito {
 
 	private Fruitore f;
-	private LoginController main;
+	private Controller main;
 
 
-	private TableInfoPerPrestito info;
-	//TANTI PARAMETRI->  INTRODUCE PARAMETER OBJECT CLASSE TABLE INFO PER PRESTITO
-	public AzioneRichiestaPrestito(Fruitore f, LoginController main){
+	
+	public AzioneRichiestaPrestito(Fruitore f, Controller main){
 		this.f = f;
 		this.main = main;
-		this.info = new TableInfoPerPrestito(main);
 	}
 
 //	public void azione(){
@@ -89,8 +88,44 @@ public class AzioneRichiestaPrestito {
 //		}
 //	}
 	//----------------------------------------------------------------------------------------------------------
-	//QUALE ALTERNATIVA E' MEGLIO?
-	private boolean controllo(RisorsaEntityController c){
+
+	/**
+	 * Metodo richiestaPrestito permette, a un fruitore, di poter scegliere
+	 * la risorsa (che può essere di tipo Libro o Film) presente nell'archivio. 
+	 * Se il prestito va a buon fine, il numero di licenze di tale risorsa viene decrementato.
+	 * @param a
+	 */
+	public void azioneRichiestaPrestitoInput(){
+		int selezione = InputDati.selezionaElementoDaArray(ConstantsRisorsa.TIPOLOGIE_RISORSE);
+		String selezioneKey = ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione];
+		
+		RisorsaEntityController rec = main.getRisorsaControllerByKey(selezioneKey);
+		salvaPrestitoPerRisorsa(rec, main.getPrestitoControllerByKey(selezioneKey),
+				selezioneKey, rec.getNumMaxPrestiti() );
+	}
+	//TEST
+	public void azioneRichiestaPrestito(String selezioneKey, Risorsa r){
+		RisorsaEntityController rec = main.getRisorsaControllerByKey(selezioneKey);
+		salvaPrestitoPerRisorsa(r, rec, main.getPrestitoControllerByKey(selezioneKey),
+				selezioneKey, rec.getNumMaxPrestiti() );
+	} //IN BASE AL REC CHE HO PASSATO MI CHIAMA IL GET NUM MAX PRESTITI CORRETTO
+	
+		
+	private void salvaPrestitoPerRisorsa(RisorsaEntityController rec, PrestitoEntityController pec, String tipoRisorsa, int maxRisorsa)
+	{
+		if(controlloNonVuoto(rec)) return;
+		if(f.controlloRichiestaPrestitoRisorsa(tipoRisorsa, maxRisorsa)){ //SELEZIONE LA RISORSA GIUSTA
+			Risorsa r = rec.selezionaRisorsa();
+			//Risorsa r = rec.selezionaRisorsaConFiltro(tipoRisorsa, rec.risorse());
+			creaPrestito(r, pec, rec);
+		}
+		else{
+			pec.limiteRaggiunto(); //LIMITE RAGGIUNTO DI PRESTITI
+		}
+	}
+		
+	//PUO'ESSERE SPOSTATO IN RISORSA ENTITYCONTROLLER
+	private boolean controlloNonVuoto(RisorsaEntityController c){
 		if(c.controlloSizeArchivio()==0){
 			c.getRisorsaView().stampaErroreArchivio();
 			return true;
@@ -98,65 +133,41 @@ public class AzioneRichiestaPrestito {
 		return false;
 	}
 	
-	private boolean controlloPerRichiestaSpecifica(String tipo, int valoreMax){
-		return f.controlloRichiestaPrestitoRisorsa(tipo, valoreMax);
-	}
+//	private boolean controlloPerRichiestaSpecifica(String tipo, int valoreMax){
+//		return f.controlloRichiestaPrestitoRisorsa(tipo, valoreMax);
+//	}
+
 	
-	private void prendoRisorsa(String nome, PrestitoEntityController contr, RisorsaEntityController ris){ 
-		Risorsa r = ris.selezionaRisorsaConFiltro(nome, ris.risorse());//SBAGLIA
-		this.prendoRisorsa(r,  nome, contr, ris);
-	}
-	//TEST
-	private void prendoRisorsa(Risorsa r, String nome, PrestitoEntityController contr, RisorsaEntityController ris){ 
+	//PASSAVO ANCHE COME PARAMETRO STRING NOME MA NON LO UTILIZZAVO
+	private void creaPrestito(Risorsa r, PrestitoEntityController contr, RisorsaEntityController ris){ 
+		Prestito p = null;
 		if(r.getNumeroLicenze()>0){ 
-			Prestito p = new Prestito(r, f.getNome()); 
+			p = new Prestito(r, f); 
 			contr.aggiungiPrestito(p, f.getPrestiti(), f.getPrestitiStoriciMiei());
-			r.setNumeroLicenze(r.getNumeroLicenze()-1);		
+			r.setNumeroLicenze(r.getNumeroLicenze()-1);
 		}
 		else{
 			ris.getRisorsaView().stampaRisorsaCopieEsaurite(r);
 		}
 	}
 	
-	public void rifatto(){
-		int selezione = InputDati.selezionaElementoDaArray(ConstantsRisorsa.TIPOLOGIE_RISORSE);
-		String selezioneKey = ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione];
-		RisorsaEntityController rec = info.getRisorsaControllerByKey(selezioneKey);
-		salvaPrestitoPerRisorsa(rec, info.getPrestitoControllerByKey(selezioneKey),
-				selezioneKey, rec.getNumMaxPrestiti() );
-	}
-	
-	//test
-	public void rifatto(String selezioneKey, Risorsa r){
-		RisorsaEntityController rec = info.getRisorsaControllerByKey(selezioneKey);
-		salvaPrestitoPerRisorsa(r, rec, info.getPrestitoControllerByKey(selezioneKey),
-				selezioneKey, rec.getNumMaxPrestiti() );
-	}
-	
-	private void salvaPrestitoPerRisorsa(RisorsaEntityController rec, PrestitoEntityController pec, String tipoRisorsa, int maxRisorsa)
-	{
-		if(controllo(rec)) return;
-		if(this.controlloPerRichiestaSpecifica(tipoRisorsa, maxRisorsa)){ //SELEZIONE LA RISORSA GIUSTA
-			prendoRisorsa(tipoRisorsa, pec, rec);
 
-		}
-		else{
-			pec.limiteRaggiunto(); //LIMITE RAGGIuNTO DI PRESTITI
-		}
-	}
 	
-//TEST
+	//TEST 
 	private void salvaPrestitoPerRisorsa(Risorsa r, RisorsaEntityController rec, PrestitoEntityController pec, String tipoRisorsa, int maxRisorsa)
 	{
-		if(controllo(rec)) return;
-		if(this.controlloPerRichiestaSpecifica(tipoRisorsa, maxRisorsa)){ //SELEZIONE LA RISORSA GIUSTA
-			prendoRisorsa(r, tipoRisorsa, pec, rec);
-
+		if(controlloNonVuoto(rec)) return;
+		if(f.controlloRichiestaPrestitoRisorsa(tipoRisorsa, maxRisorsa)){ //SELEZIONE LA RISORSA GIUSTA
+			creaPrestito(r, pec, rec);
 		}
 		else{
 			pec.limiteRaggiunto(); //LIMITE RAGGIuNTO DI PRESTITI
 		}
 	}
+	
+	
+	
+
 
 	
 }

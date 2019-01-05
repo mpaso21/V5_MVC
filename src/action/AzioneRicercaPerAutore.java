@@ -7,7 +7,12 @@ import entity.Libro;
 import entity.Risorsa;
 
 public class AzioneRicercaPerAutore implements RicercaInArchivio{
-
+	/**		
+	 * Metodo ricercaRisorsaAutore permette di ricercare all'interno dell'archivio
+	 * un libro inserendo come input l'autore.
+	 * @param inputAutore
+	 */
+	
 	@Override
 	public List<Risorsa> ricerca(String input, List<Risorsa> archivio) {
 		List<Risorsa> risorseTrovate = new ArrayList<>();

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import entity.Prestito;
 import mylib.Constants;
 import mylib.ConstantsPrestito;
@@ -20,8 +22,6 @@ import mylib.InputDati;
  */
 public abstract class PrestitoView {
 
-
-
 	/**
 	 * Metodo stampaPrestito Fornisce una rappresentazione sotto forma di stringa
 	 * del prestito (contiene tutte le sue proprietà) e inoltre contiene il valore
@@ -29,6 +29,9 @@ public abstract class PrestitoView {
 	 * @param p
 	 * @return
 	 */
+	
+	//METODO MESSO ASTRATTO PERCHE' CAMBIA L'IMPLEMENTAZIONE A SECONDA DEL TIPO
+	//DI RISORSA PRESTATO
 	protected abstract String stampaPrestito(Prestito p);
 
 	/**	
@@ -48,27 +51,6 @@ public abstract class PrestitoView {
 
 	}
 
-	/**
-	 * Metodo stampa fornisce una rappresentazione del prestito.
-	 * Ciascun prestito è rappresentato  dal nome fruitore  e da una sequenza di 
-	 * proprietà proprie del prestito come la categoria di appartenenza,
-	 * titolo, autore/regista, data inizio prestito, data fine prestito, proroga (si/no)
-	 */
-	public String stampa(Prestito p) {
-		StringBuilder sb = new StringBuilder();
-		sb.append( String.format(" %10s | ", p.getNomeFruitore()) + stampaPrestito(p));
-		return sb.toString();	
-	}
-	/**
-	 * Metodo stringaStoricoIntestazione fornisce l'intestazione per 
-	 * elenco dei prestiti sotto forma di Stringa.
-	 * @return
-	 */
-	public String stringaStoricoIntestazione(){
-		StringBuilder sb = new StringBuilder();
-		sb.append(String.format(" %10s | %7s | %14s | %15s | %20s | %20s | %3s |\n" ,"FRUITORE: ", "CATEGORIA", "TITOLO", "AUTORE/REGISTA", "INIZIO PRESTITO", "FINE PRESTITO", "PROROGA"));
-		return sb.toString(); 
-	}
 
 	/**
 	 * Metodo stampaTutti fornisce a video una rappresentazione di tutti  i prestiti
@@ -88,13 +70,36 @@ public abstract class PrestitoView {
 		}
 	}
 
+	/**
+	 * Metodo stampa fornisce una rappresentazione del prestito.
+	 * Ciascun prestito è rappresentato  dal nome fruitore  e da una sequenza di 
+	 * proprietà proprie del prestito come la categoria di appartenenza,
+	 * titolo, autore/regista, data inizio prestito, data fine prestito, proroga (si/no)
+	 */
+	public String stampa(Prestito p) {
+		StringBuilder sb = new StringBuilder();
+		sb.append( String.format(" %10s | ", p.getFruitore().getNome()) + stampaPrestito(p));
+		return sb.toString();	
+	}
+	/**
+	 * Metodo stringaStoricoIntestazione fornisce l'intestazione per 
+	 * elenco dei prestiti sotto forma di Stringa.
+	 * @return
+	 */
+	private String stringaStoricoIntestazione(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format(" %10s | %7s | %14s | %15s | %20s | %20s | %3s |\n" ,"FRUITORE: ", "CATEGORIA", "TITOLO", "AUTORE/REGISTA", "INIZIO PRESTITO", "FINE PRESTITO", "PROROGA"));
+		return sb.toString(); 
+	}
+
+
 	/**	
 	 * Metodo stampaConNumeri fornisce  sotto forma di elenco puntato 
 	 *una rappresentazione dell'ArrayList passato come parametro.
 	 * @param prestiti
 	 * @return
 	 */
-	public String stampaConNumeri(List<Prestito> prestiti){
+	private String stampaConNumeri(List<Prestito> prestiti){
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < prestiti.size(); i++){
 			sb.append(i+1 + " ");
@@ -131,11 +136,14 @@ public abstract class PrestitoView {
 		System.out.println(ConstantsPrestito.NUM_PROROGHE + valore);
 	}
 	
-	public void stampaPerRisorsaPiuPrestata(HashMap<String,Integer> map) {
-		System.out.println(ConstantsPrestito.RISORSE_PIU_PRESTATE + LocalDateTime.now().getYear() +  "\n");
-		System.out.println(Arrays.asList(map)); 
-
-		
+	public void stampaPerRisorsaPiuPrestata(Map<String,Integer> map) {
+		if(map.size() == 0){
+			stampaZeroPrestiti();
+		}
+		else{
+			System.out.println(ConstantsPrestito.RISORSE_PIU_PRESTATE + LocalDateTime.now().getYear() +  "\n");
+			System.out.println(Arrays.asList(map));
+		}	
 	}
 	
 	public void superatoLimitePrestiti(){

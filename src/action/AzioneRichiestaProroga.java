@@ -1,6 +1,9 @@
 package action;
 
 import java.time.LocalDateTime;
+
+import controller.Controller;
+
 import controller.entitycontroller.PrestitoEntityController;
 import entity.Fruitore;
 import entity.Prestito;
@@ -10,14 +13,15 @@ import mylib.InputDati;
 public class AzioneRichiestaProroga {
 
 	private Fruitore f;
-	private PrestitoEntityController libroPrestitoController;
-	private PrestitoEntityController filmPrestitoController;
-
-	public AzioneRichiestaProroga(Fruitore f, PrestitoEntityController libroPrestitoController, 
-									PrestitoEntityController filmPrestitoController){
+//	private PrestitoEntityController libroPrestitoController;
+//	private PrestitoEntityController filmPrestitoController;
+	private Controller main;
+	
+	public AzioneRichiestaProroga(Fruitore f, Controller main){
 		this.f = f;
-		this.libroPrestitoController = libroPrestitoController;
-		this.filmPrestitoController = filmPrestitoController;
+		this.main = main;
+//		this.libroPrestitoController = libroPrestitoController;
+//		this.filmPrestitoController = filmPrestitoController;
 	}
 
 
@@ -26,51 +30,68 @@ public class AzioneRichiestaProroga {
 	 * determinato prestito. Tale proroga può essere richiesta una sola volta.
 	 * @param la
 	 */	
-	public void proroga(LocalDateTime la){
-		Prestito p;
+	//METODO UTILIZZATO SEMPRE
+	public void prorogaConInput(LocalDateTime la){
 		int selezione = InputDati.selezionaElementoDaArray(ConstantsRisorsa.TIPOLOGIE_RISORSE);
-		if(ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione].equals("LIBRI")){
-			p = libroPrestitoController.selezionaPrestitoConFiltro(ConstantsRisorsa.LIBRO,f.getPrestiti());
-			verificaProroga(la, p, libroPrestitoController);
-		}
-		else{
-			p = filmPrestitoController.selezionaPrestitoConFiltro(ConstantsRisorsa.FILM,f.getPrestiti());
-			verificaProroga(la, p, filmPrestitoController);
-		}
+		String selezioneKey = ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione];
+		
+		f.controlloScadenzaPrestitiFruitore();
+		
+		Prestito p = main.getPrestitoControllerByKey(selezioneKey).selezionaPrestitoConFiltro(selezioneKey,f.getPrestiti());
+		proroga(p, selezioneKey, la);
+//		}
+//		else{
+//			p = filmPrestitoController.selezionaPrestitoConFiltro(ConstantsRisorsa.FILM,f.getPrestiti());
+//			verificaProroga(la, p, filmPrestitoController);
+//		}
 	}
 	
-	public void verificaProroga(LocalDateTime la, Prestito p, PrestitoEntityController controller) { 
-		if(p == null){
+	//METODO UTILIZZATO NEL TEST
+	public void proroga(Prestito p,String selezioneKey, LocalDateTime la){
+		//verificaProroga(la, p, main.getPrestitoControllerByKey(selezioneKey));
+		
+		PrestitoEntityController controller = main.getPrestitoControllerByKey(selezioneKey);
+		if(p == null){//SE IL FRUITORE NON HA I PRESTITI
 			controller.getPrestitoView().stampaErroreVuoto();
 			return;
 		}
 		if(p.rinnovo()){ 
-			prorogaCalcolo(la, p, controller);
+			calcoloProroga(la, p, controller);
 		}
 		else{
 			controller.getPrestitoView().stampaNoPrestito();
 		}
 	}
 	
-	public void prorogaCalcolo(LocalDateTime la, Prestito p, PrestitoEntityController controller){
+//	private void verificaProroga(LocalDateTime la, Prestito p, PrestitoEntityController controller) { 
+//		if(p == null){//SE IL FRUITORE NON HA I PRESTITI
+//			controller.getPrestitoView().stampaErroreVuoto();
+//			return;
+//		}
+//		if(p.rinnovo()){ 
+//			calcoloProroga(la, p, controller);
+//		}
+//		else{
+//			controller.getPrestitoView().stampaNoPrestito();
+//		}
+//	}
+	
+	private void calcoloProroga(LocalDateTime la, Prestito p, PrestitoEntityController controller){
+		
 		if (la.isBefore(p.getFine_prestito()) && la.isAfter(calcoloTerminiPrescrittiProroga(p))) {
-
 			p.setInizio_prestito(la);
 			p.setFine_prestito(p.calcolo_fine_prestito());
 			p.setNumero_rinnovo(p.getNumero_rinnovo()+1);
 			controller.getPrestitoView().stampaSiRinnovo();
 
 		} else if (!la.isAfter(calcoloTerminiPrescrittiProroga(p))) { 
-			LocalDateTime d;
-			d = calcoloTerminiPrescrittiProroga(p);
+			LocalDateTime d = calcoloTerminiPrescrittiProroga(p);
 			controller.getPrestitoView().stampaRinnovoTraPoco(d);
 		}
 	}
 
 
-
-
-	public LocalDateTime calcoloTerminiPrescrittiProroga(Prestito p){
+	private LocalDateTime calcoloTerminiPrescrittiProroga(Prestito p){
 		Calcolo calcoloProroga = new CalcoloInizioProroga(p);
 		return calcoloProroga.calcolo();
 	}

@@ -14,7 +14,7 @@ public class Prestito {
 
 	//private String tipoRisorsa;
 	private Risorsa r;
-	private String nomeFruitore;
+	private Fruitore fruitore;
 	private LocalDateTime inizio_prestito ;
 	private LocalDateTime fine_prestito ;
 	private int numero_rinnovo;
@@ -24,9 +24,9 @@ public class Prestito {
 	 *  associato alla risorsa, e dal nome del fruitore.
 	 * @param r
 	 */
-	public Prestito(Risorsa r, String nomeFruitore){ 
+	public Prestito(Risorsa r, Fruitore fruitore){ 
 		this.r = r;
-		this.nomeFruitore = nomeFruitore;
+		this.fruitore = fruitore;
 		inizio_prestito = Data.creaData(); 
 		fine_prestito = calcolo_fine_prestito();
 		numero_rinnovo = 0;
@@ -49,7 +49,7 @@ public class Prestito {
 		return calcoloFine.calcolo();
 	}
 
-	//METODO RIMASTO UGUALE APPARTENENTE A PRESTITO
+	//METODO RINNOVO RIMASTO UGUALE APPARTENENTE A PRESTITO
 	/**
 	 * Metodo rinnovo controlla la possibilità di effettuare un rinnovo
 	 * di tale prestito. Il rinnovo può essere richiesto una sola volta.
@@ -96,11 +96,10 @@ public class Prestito {
 		this.numero_rinnovo = numero_rinnovo;
 	}
 
-	public String getNomeFruitore() {
-		return nomeFruitore;
-	}
-	public void setNomeFruitore(String nomeFruitore) {
-		this.nomeFruitore = nomeFruitore;
+
+
+	public Fruitore getFruitore() {
+		return fruitore;
 	}
 
 	public String getTipoRisorsa() {

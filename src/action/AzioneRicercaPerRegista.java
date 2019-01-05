@@ -7,7 +7,11 @@ import entity.Film;
 import entity.Risorsa;
 
 public class AzioneRicercaPerRegista implements RicercaInArchivio {
-
+	/**			
+	 * Metodo ricercaRisorsaRegista permette di ricercare all'interno dell'archivio
+	 * un film inserendo come input il regista.
+	 * @param inputRegista
+	 */
 	@Override
 	public List<Risorsa> ricerca(String input, List<Risorsa> archivio) {
 		List<Risorsa> risorseTrovate = new ArrayList<>();

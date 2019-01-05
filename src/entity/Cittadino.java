@@ -19,7 +19,7 @@ public class Cittadino {
 	 */
 	public Cittadino(String nome, int eta){
 		this.nome = nome; //HO SPOSTATO CREA NOME, CREA ETA' IN MY LIB -> REFACTOR MOVE METHOD
-		this.eta = eta;
+		this.eta = eta;   //LI CONSIDERO METODI DI UTILITA' GENERALE
 	}
 
 	public String getNome() {

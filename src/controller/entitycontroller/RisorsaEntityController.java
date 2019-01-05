@@ -1,11 +1,8 @@
 package controller.entitycontroller;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import entity.Risorsa;
-import model.risorsa.FilmModel;
-import model.risorsa.LibroModel;
 import model.risorsa.RisorsaModel;
 import view.risorsa.RisorsaView;
 
@@ -24,47 +21,64 @@ public class RisorsaEntityController {
 		this.aggiungiRisorsa(r);
 	}
 	
+	//POTEVO RICHIAMARE DIRETTAMENTE IN CREA RISORSAMODEL.AGGIUNGIRISORSA(L) 
+	//CREATO APPOSITAMENTE COSI' PER I TEST.
 	public void aggiungiRisorsa(Risorsa l) {
 		risorsaModel.aggiungiRisorsa(l);
 	}
 	
-	public Risorsa selezionaRisorsa(){
-		return risorsaView.selezionaRisorsa(risorse());
+	//METODO RIMUOVI COSTITUITO DALLA SELEZIONE, ELIMINA E STAMPA -> QUINDI NEL CONTROLLER
+//	public void rimuovi(){ 
+//		if(!risorse().isEmpty()){
+//			Risorsa r = selezionaRisorsa();
+//			risorsaModel.eliminaRisorsa(r);
+//		}
+//		else{
+//			risorsaView.stampaErroreArchivio();
+//		}
+//	}
+//	
+	public Risorsa selezionaRisorsa(){ //SELEZIONARISORSA CONTROLLA GIA' SE L'ARCHIVIOE ' VUOTO
+		return risorsaView.selezionaRisorsa(risorsaModel.getArchivio());
 	}
 	
-	public Risorsa selezionaRisorsaConFiltro(String nome, List<Risorsa>archivio){
-		if(!archivio.isEmpty()){
-			List <Risorsa> risorseFiltrati =  filtraRisorsa(nome, archivio);
-			return risorsaView.selezionaRisorsa(risorseFiltrati);
-		}
-		else{
-			return null;
-		}
-	}
-	
-	public List<Risorsa> filtraRisorsa(String nome, List<Risorsa>archivio){
-		List <Risorsa> risorseFiltrati = new ArrayList<Risorsa>();
-		for(Risorsa r: archivio){
-			if(r.getTipo().equalsIgnoreCase(nome)){
-				risorseFiltrati.add(r);
+	//VERIFICA CHE L'ARCHIVIO NON E' VUOTO
+	//RIS = SELEZIONA RISORSA 
+	//E POI RIMUOVI
+	//COSI METODO TESTABILE
+		public void rimuoviRisorsa(Risorsa ris){
+			if(ris!=null){
+				risorsaModel.eliminaRisorsa(ris);
+			}
+			else{
+				risorsaView.stampaErroreArchivio();
 			}
 		}
-		return risorseFiltrati;
-	}
 
+//	public Risorsa selezionaRisorsaConFiltro(String nome, List<Risorsa>archivio){
+//		if(!archivio.isEmpty()){
+//			List <Risorsa> risorseFiltrati =  filtraRisorsa(nome, archivio);
+//			return risorsaView.selezionaRisorsa(risorseFiltrati);
+//		}
+//		else{
+//			return null;
+//		}
+//	}
+//	
+//	private List<Risorsa> filtraRisorsa(String nome, List<Risorsa>archivio){
+//		List <Risorsa> risorseFiltrati = new ArrayList<Risorsa>();
+//		for(Risorsa r: archivio){
+//			if(r.getTipo().equalsIgnoreCase(nome)){
+//				risorseFiltrati.add(r);
+//			}
+//		}
+//		return risorseFiltrati;
+//	}
 
-	public void rimuovi(){
-		if(!risorse().isEmpty()){
-			Risorsa r = selezionaRisorsa();
-			risorsaModel.eliminaRisorsa(r);
-		}
-		else{
-			risorsaView.stampaErroreArchivio();
-		}
-	}
 	
+	//UTLIZZATO NELL'OPERATORE CONTROLLER
 	public void stampaArchivio(){ //METODI CREATI PER EVITARE FRAGILITA' DI PROGETTO CIOE' TROPPI GET
-		risorsaView.stampaTutti(risorse());
+		risorsaView.stampaTutti(risorsaModel.getArchivio());
 	}
 	
 	public void stampaStoricoArchivio(){
@@ -75,16 +89,16 @@ public class RisorsaEntityController {
 		risorsaView.stampaRisorseTrovate(risorseTrovate);
 	}
 
-	public List<Risorsa> ricercaTitolo(String inputTitolo){
+	public List<Risorsa> ricercaTitolo(String inputTitolo){ //TESTATO
 		return risorsaModel.ricercaPerTitolo(inputTitolo);
 	}
 	
 	
-	public List<Risorsa> ricercaGenere(String inputGenere){
-		return risorsaModel.ricercaPerGenere(inputGenere);
-		
+	public List<Risorsa> ricercaGenere(String inputGenere){ //TESTATO
+		return risorsaModel.ricercaPerGenere(inputGenere);	
 	}
-//	
+	
+//	SPOSTATI NEGLI APPOSITI CONTROLLER
 //	public List<Risorsa> ricercaAutore(String inputAutore){
 //	return ((LibroModel) risorsaModel).ricercaLibroAutore(inputAutore);
 //	
@@ -94,9 +108,20 @@ public class RisorsaEntityController {
 //	return ((FilmModel) risorsaModel).ricercaFilmRegista(inputRegista);
 	
 //}
-	public int controlloSizeArchivio() {//POTREI TOGLIERLO E RICHIAMARE SOLO METODO
+	
+	//POTREI TOGLIERLO E RICHIAMARE SOLO METODO MA CREATO PER EVITARE TROPPI GET.
+	//IN AZIONE RICHIESTA PRESTITO  CONTROLLER.GETRISORSAMODEL.GETARCHIVIO.SIZE AL 
+	//POSTO DI CONTROLLER.CONTROLLOSIZEARCHIVIO()
+	public int controlloSizeArchivio() {
 		return risorsaModel.getArchivio().size();
 	}
+	
+	//UTILE PER RICHIAMARE QUELLI DELLE CLASSI DERIVATE ATTRAVERSO IL POLIMORFISMO
+	//UTILIZZATO NELLA CLASSE AZIONE RICHIESTA PRESTITO
+	public int getNumMaxPrestiti() {
+		return 1;
+	}
+
 	public RisorsaModel getRisorsaModel() {
 		return risorsaModel;
 	}
@@ -104,17 +129,6 @@ public class RisorsaEntityController {
 	public RisorsaView getRisorsaView() {
 		return risorsaView;
 	}
-	public List<Risorsa> risorse(){ //CREATO QUI PERCHE' RICHIAMATO TANTE VOLTE
-		return risorsaModel.getArchivio();
-	}
-	
-	
-	//mi serve solo per richiamare quelli delle classi specifiche con il polimorfismo
-	public int getNumMaxPrestiti() {
-		return 1;
-	}
-
-	
 
 	
 }

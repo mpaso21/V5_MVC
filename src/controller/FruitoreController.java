@@ -1,29 +1,27 @@
 package controller;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.Map;
 import action.AzioneRichiestaPrestito;
 import action.AzioneRichiestaProroga;
-import controller.entitycontroller.PrestitoEntityController;
+import action.AzioneRichiestaRinnovoIscrizione;
 import entity.Fruitore;
 import model.cittadino.FruitoreModel;
-import mylib.ConstantsRisorsa;
-import mylib.Data;
 import mylib.MyMenu;
 import view.cittadino.FruitoreView;
 
 
 public class FruitoreController  extends CreatoreMenu {
 
-	MyMenu m = crea();
+	MyMenu menuFruitore = crea();
 	private boolean uscita = false;
 	
-	private LoginController mainManager;
+	private Controller mainManager;
 	private FruitoreModel fruitoreModel;
 	private FruitoreView fruitoreView;
 
 
-	public FruitoreController(LoginController mainManager){//MAIN MANAGER BRUTTA DIPENDENZA
+	public FruitoreController(Controller mainManager){
 		this.mainManager = mainManager;
 		this.fruitoreModel = new FruitoreModel();
 		this.fruitoreView = new FruitoreView();
@@ -31,9 +29,9 @@ public class FruitoreController  extends CreatoreMenu {
 
 	public void init(Fruitore f){
 		do{
-			switch(m.scegli()){
+			switch(menuFruitore.scegli()){
 			case 1:
-				rinnovoFruitore(f);
+				rinnovoIscrizione(f);
 				break;
 			case 2:
 				richiestaPrestito(f);
@@ -42,22 +40,16 @@ public class FruitoreController  extends CreatoreMenu {
 				prorogaPrestito(f);
 				break;
 			case 4:
-				ricercaPerTitolo();
+				mainManager.getOperatore().ricercaTitolo();
 				break;
 			case 5:
-				ricercaPerGenere();
+				mainManager.getOperatore().ricercaGenere();
 				break;
 			case 6:
-				ricercaPerAutore();
+				mainManager.getOperatore().ricercaAutore();
 				break;
 			case 7:
-				ricercaPerRegista();
-				break;
-			case 8:
-				stampaPrestitiAttuali(f);
-				break;
-			case 9:
-				this.stampaStoricoPrestiti(f); 
+				mainManager.getOperatore().ricercaRegista();
 				break;
 			case 0:
 				uscita = true;
@@ -66,9 +58,16 @@ public class FruitoreController  extends CreatoreMenu {
 		}while(uscita != true);
 	}
 
-	public void aggiungi() { //CREAZIONE FRUITORE 
+	public void aggiungi() { //ISCRIZIONE FRUITORE 
 		Fruitore f = fruitoreView.creaFruitoreInput();
 		if(f!=null){
+			String id;
+			do {
+				id = fruitoreView.inserisciIdInput();
+				
+			} while(fruitoreModel.controlloIdGiaEsistente(id) && fruitoreView.messaggioIdGiaPresente() );
+			
+			f.setId(id);
 			fruitoreModel.aggiungiFruitore(f);
 			fruitoreView.stampaIdFruitore(f.getId()); //STAMPA CREDENZIALI
 		}
@@ -76,7 +75,7 @@ public class FruitoreController  extends CreatoreMenu {
 			fruitoreView.stampaNoFruitore();
 		}
 	}
-	
+
 	public void login(){ //CHIAMA IL MENU DI FRUITORE
 		String id = fruitoreView.inserisciIdInput();
 		Fruitore f = fruitoreModel.controlloPresenzaFruitore(id);
@@ -92,110 +91,116 @@ public class FruitoreController  extends CreatoreMenu {
 	}
 
 	
-	public void rinnovoFruitore(Fruitore f) { //extract method di qui per metodo rinnovoFruitore
-		if(fruitoreModel.controlloScadenza(f)) { //EXTRACT METHOD + MOVE METHOD
-			fruitoreView.stampaFruitoreScaduto();
-		} 
-		else {
-			LocalDateTime tempo = fruitoreModel.tempoRinnovoFruitore(f);
-			if( tempo == null ) {
-				fruitoreModel.rinnovoFruitore(f);
-				fruitoreView.stampaIscrizioneRinnovata();
-			} 
-			else {
-				fruitoreView.stampaRinnovoFruitoreTraPoco(Data.convertoData(tempo));
-			}
-		}
+	public void rinnovoIscrizione(Fruitore f) {
+		AzioneRichiestaRinnovoIscrizione rinnovo = new AzioneRichiestaRinnovoIscrizione(f, mainManager);
+		rinnovo.rinnovo(f);
+		
+		//EXTRACT METHOD RISPETTO AL PROGETTO PRECEDENTE
+		//MESSO IN CONTROLLER PERCHE' MISCHIA VIEW E MODEL
+		
+		//POI HO DECISO DI INSERIRLO IN UNA APPOSITA CLASSE CHE SI OCCUPA DEL RINNOVO DI ISCRIZIONI
+		//DI FRUITORI
+//		if(fruitoreModel.controlloScadenza(f)) { 
+//			fruitoreView.stampaFruitoreScaduto();
+//		} 
+//		else {
+//			LocalDateTime tempo = fruitoreModel.tempoRinnovoFruitore(f);
+//			if( tempo == null ) {
+//				fruitoreModel.rinnovoFruitore(f);
+//				fruitoreView.stampaIscrizioneRinnovata();
+//			} 
+//			else {
+//				fruitoreView.stampaRinnovoFruitoreTraPoco(Data.convertoData(tempo));
+//			}
+//		}
 	}
 	
+	//COME SOPRA IL METODO RICHIEDI PRESTITO AVEVA BISOGNO SIA DI VIEW CHE DI MODEL
+	//HO VOLUTO INSERIRLO IN UN ALTRA CLASSE CHE SI OCCUPA DELLA RICHIESTA DEL PRESTITO
 	public void richiestaPrestito(Fruitore f) {
 		AzioneRichiestaPrestito a = new AzioneRichiestaPrestito(f, mainManager);
-		a.rifatto();
+		a.azioneRichiestaPrestitoInput();
 	}
 
-
+	//IDEM
 	public void prorogaPrestito(Fruitore f){
-		AzioneRichiestaProroga p = new AzioneRichiestaProroga(f, mainManager.getPrestitoLibroController(),
-																mainManager.getPrestitoFilmController());
-		p.proroga(LocalDateTime.now());
+		AzioneRichiestaProroga p = new AzioneRichiestaProroga(f, mainManager);
+		p.prorogaConInput(LocalDateTime.now());
 	}
-		
-	public void ricercaPerTitolo(){
-		mainManager.getOperatore().ricercaTitolo();
-	}
-	public void ricercaPerGenere(){
-		mainManager.getOperatore().ricercaGenere();
-	}
-	
-	public void ricercaPerAutore(){
-		mainManager.getOperatore().ricercaAutore();
-	}
-	
-	public void ricercaPerRegista(){
-		mainManager.getOperatore().ricercaRegista();
-	}
-	
+
 	
 	//METODO CHE NON POTEVA ANDARE IN FRUITORE MODEL /VIEW PERCHE' MISCHIA VIEW/MODEL DEL
-	//FRUITORE-> E' PER OPERATORE
+	//FRUITORE-> E' UN OPZIONE DEL MENU' DELL'OPERATORE
 	
 		public void stampaFruitoriAttuali() {
 			fruitoreModel.controlloScadenza(LocalDateTime.now());
 			fruitoreView.stampaTuttiFruitori(fruitoreModel.getFruitori());
 		}
 	
-	//PER OPERATORE
+		
+		//INSERITO QUI E NON IN OPERATORE PER EVITARE TROPPI GET
+		// E' UN OPZIONE DEL MENU' DELL'OPERATORE
 		public void stampaStoricoFruitori(){
 			fruitoreView.stampaTuttiFruitori(fruitoreModel.getStoricoFruitori());
 		}
 		
 		
-		//MESSO IN CONTROLLER PERCHE' MISCHA VIEW /MODEL DEL FRUITORE
-		//METODO PER OPERATORE
-		public void stampaNumPrestitiPerFruitore(){
-			HashMap <String,Integer> a = fruitoreModel.prestitiPerFruitore();
-			if(a.size() == 0){
-				fruitoreView.stampaZeroFruitori();
-			}
-			else{
-				fruitoreView.stampaPrestitiPerFruitore(a);
-			}
+		//METODO CHE NON POTEVA ANDARE IN FRUITORE MODEL /VIEW PERCHE' MISCHIA VIEW/MODEL DEL
+		//FRUITORE-> E' UN OPZIONE DEL MENU' DELL'OPERATORE
+//		public void stampaNumPrestitiPerFruitore(){
+//			Map <String,Integer> a = fruitoreModel.prestitiPerFruitore();
+//			if(a.size() == 0){
+//				fruitoreView.stampaZeroFruitori();
+//			}
+//			else{
+//				fruitoreView.stampaPrestitiPerFruitore(a);
+//			}
+//		}
+		
+		//CHIAMATO IN OPERATORE CONTROLLER METODO "DELEGATO" PER EVITARE TROPPI GET E QUINDI FRAGILITA'
+		//DI PROGETTO (MainManager.getFruitore.getFruitoreModel.prestitiPerFruitore)
+		public Map<String, Integer> numPrestitiPerFruitore(){
+		  return fruitoreModel.prestitiPerFruitore();
 		}
 
-	
-	public void stampaPrestitiAttuali(Fruitore f){//STAMPA PRESTITI  ATTUALI PER FRUITORE SPECIFICO
-		PrestitoEntityController pec = null;
-		for(String s : ConstantsRisorsa.TIPOLOGIE_RISORSE) {
-			pec = mainManager.getPrestitoControllerByKey(s);
-			pec.controlloScadenzaTuttiPrestitiFruitore(f.getPrestitiPerTipo(s, f.getPrestiti()));
-			pec.stampaPrestiti(f.getPrestitiPerTipo(s, f.getPrestiti()));
-		}
+		
+		//INSERITO IN FRUITORE CONTROLLER METODO CHE NON POTEVA ANDARE IN FRUITORE MODEL /VIEW PERCHE' MISCHIA VIEW/MODEL DEL
+		//FRUITORE
+//	private void stampaPrestitiAttualiDelFruitore(Fruitore f){
+//		PrestitoEntityController pec = null;
+//		f.controlloScadenzaPrestitiFruitore();
+//		for(String s : ConstantsRisorsa.TIPOLOGIE_RISORSE) {
+//			pec = mainManager.getPrestitoControllerByKey(s);
+//			//pec.controlloScadenzaTuttiPrestitiFruitore(f.getPrestitiPerTipo(s, f.getPrestiti()));
+//			pec.stampaPrestiti(f.getPrestitiPerTipo(s, f.getPrestiti()));
+//		}
 		
 //		mainManager.getPrestitoLibroController().controlloScadenzaTuttiPrestitiFruitore(f.getPrestitiPerTipo(ConstantsRisorsa.LIBRO, f.getPrestiti()));
 //		mainManager.getPrestitoLibroController().stampaPrestiti(f.getPrestitiPerTipo(ConstantsRisorsa.LIBRO, f.getPrestiti()));
 //		mainManager.getPrestitoFilmController().controlloScadenzaTuttiPrestitiFruitore(f.getPrestitiPerTipo(ConstantsRisorsa.FILM, f.getPrestiti()));
 //		mainManager.getPrestitoFilmController().stampaPrestiti(f.getPrestitiPerTipo(ConstantsRisorsa.FILM, f.getPrestiti()));
-	}
-
-
-	public void stampaStoricoPrestiti(Fruitore f){
-		mainManager.getPrestitoLibroController().stampaPrestiti(f.getPrestitiPerTipo(ConstantsRisorsa.LIBRO, f.getPrestitiStoriciMiei()));
-		mainManager.getPrestitoFilmController().stampaPrestiti(f.getPrestitiPerTipo(ConstantsRisorsa.FILM, f.getPrestitiStoriciMiei()));
-
-	}
+	//}
 	
-	
-	public void stampaPrestitiAttualiTuttiFruitori(){
-		for(Fruitore f: fruitoreModel.getFruitori()){
-			stampaPrestitiAttuali(f);
-		}
-	}
-	//STORICO PRESTITI SEMPRE PER OPERATORE PER FARE INTERRROGAZIONI
-	public void stampaPrestitiStoriciFruitori(){
-		for(Fruitore f: fruitoreModel.getStoricoFruitori()){
-			stampaStoricoPrestiti(f);
-		}
-	}
+//	public void stampaPrestitiAttualiTuttiFruitori(){
+//		for(Fruitore f: fruitoreModel.getFruitori()){
+//			stampaPrestitiAttualiDelFruitore(f);
+//		}
+//	}
+	//INSERITO IN FRUITORE CONTROLLER METODO CHE NON POTEVA ANDARE IN FRUITORE MODEL /VIEW PERCHE' MISCHIA VIEW/MODEL DEL
+	//FRUITORE
+//	private void stampaStoricoPrestitiDelFruitore(Fruitore f){
+//		PrestitoEntityController pec = null;
+//		for(String s : ConstantsRisorsa.TIPOLOGIE_RISORSE) {
+//			pec = mainManager.getPrestitoControllerByKey(s);
+//			pec.stampaPrestiti(f.getPrestitiPerTipo(s, f.getPrestitiStoriciMiei()));
+//		}
+//	}
+//
+//	public void stampaPrestitiStoriciTuttiFruitori(){
+//		for(Fruitore f: fruitoreModel.getStoricoFruitori()){
+//			stampaStoricoPrestitiDelFruitore(f);
+//		}
+//	}
 
 	@Override
 	protected String titolo() {
@@ -213,12 +218,22 @@ public class FruitoreController  extends CreatoreMenu {
 				"Ricerca risorsa per genere",
 				"Ricerca risorsa per autore",
 				"Ricerca risorsa per regista",
-				"Stampa miei prestiti",
-				"Stampa prestiti storici miei"};
+//				"Stampa miei prestiti",
+//				"Stampa prestiti storici miei"
+				};
 		return opzioni;
+	}
+
+	public FruitoreModel getFruitoreModel() {
+		return fruitoreModel;
+	}
+
+	public FruitoreView getFruitoreView() {
+		return fruitoreView;
 	}
 	
 
+	
 
 
 	

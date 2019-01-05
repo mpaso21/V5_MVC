@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import entity.Fruitore;
 
@@ -12,7 +13,7 @@ import entity.Prestito;
 
 import mylib.Constants;
 import mylib.ConstantsCittadino;
-import mylib.Data;
+
 
 /**
  * Metodo FruitoreModel rappresenta il modello nonchè la logica applicativa
@@ -42,23 +43,35 @@ public class FruitoreModel {
 	 * @param f
 	 */
 	public void aggiungiFruitore(Fruitore f){ //QUI ASSOCIO AL FRUITORE IL SUO ID (NON ALLA CREAZIONE).
-		String id;
-		boolean flag = false;
-		do{
-			id = Integer.toString(((int)(Math.random()*Constants.RANDOM)));
-			flag = false;
-			for(Fruitore fr : fruitori){
-				if(fr.getId().equals(id)) {//controllo che l'id creato non sia già assegnato a un fruitore
-					flag = true;
-					break;
-				}
-			}
-		}while(flag);
-		f.setId(id);//ID UNIVOCO PER IDENTIFICARE IL FRUITORE
+		if(f.getEta()< Constants.MAGGIORENNE){
+			return;
+		}
+//		String id;
+//		boolean flag = false;
+//		do{
+//			id = Integer.toString(((int)(Math.random()*Constants.RANDOM)));
+//			flag = false;
+//			for(Fruitore fr : fruitori){
+//				if(fr.getId().equals(id)) {//controllo che l'id creato non sia già assegnato a un fruitore
+//					flag = true;
+//					break;
+//				}
+//			}
+//		}while(flag);
+//		f.setId(id);//ID UNIVOCO PER IDENTIFICARE IL FRUITORE
 		fruitori.add(f);
 		storicoFruitori.add(f);
+	
 	}
-
+	
+	public boolean controlloIdGiaEsistente(String id){
+		for(Fruitore fr : fruitori){
+			if(fr.getId().equals(id)&& id.equalsIgnoreCase(ConstantsCittadino.NOME_OPERATORE)) {//controllo che l'id creato non sia già assegnato a un fruitore
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * Il metodo rimozioneFruitore permette la rimozione di un fruitore dall'elenco dei fruitori.
 	 * @param f
@@ -98,7 +111,8 @@ public class FruitoreModel {
 		return false;
 	}
 
-
+	
+	
 	/**
 	 * Il metodo controlloPresenzaFruitore controlla che l'id inserito dal fruitore sia presente nell'elenco dei fruitori.
 	 * 	Questo metodo è utilizzato ogni volta che il fruitore seleziona un'opzione dal menù.
@@ -116,54 +130,35 @@ public class FruitoreModel {
 	}
 
 
-	/**	
-	 * Il Metodo rinnovoFruitore permette di rinnovare l' iscrizione di un determinato fruitore,
-	 * ovviamente se la richiesta di rinnovo è effettuata prima della scadenza dell'iscrizione e dopo
-	 * un certo numero di giorni antecedenti la scadenza.
-	 * @param f
-	 */
-	public boolean rinnovoFruitore(Fruitore f){
-		LocalDateTime la = LocalDateTime.now();
-		if (la.isBefore(f.getScadenzaIscrizione()) && la.isAfter(Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione()))) {
-			f.setInizioIscrizione(la);
-			f.setScadenzaIscrizione(Data.cambiaMinuto(ConstantsCittadino.NUM_SCADENZA, la));
-			return true;
-		} 
-		return false;
-	}
-/**
- * Metodo tempoRinnovoFruitoe permette di calcolare il tempo che il fruitore ha a disposizione
- * per rinnovare la sua iscrizione.
- * @param f
- * @return
- */
-	public LocalDateTime tempoRinnovoFruitore(Fruitore f) {
-		LocalDateTime la = LocalDateTime.now();
-		if (la.isBefore(Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione()))) { //è possibile rinnovare da calcoloTerminiPrescritti in poi
-			return Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione());
-		}
-		return null;
-	}
-//MAI STATO CHIAMATO
+	//POTREI METTERLO COME ACTION AZIONE RICHIESTA RINNOVO E TOGLIERLI DI QUA, FACCIO MENO RESPONSABILITA'
+//	/**	
+//	 * Il Metodo rinnovoFruitore permette di rinnovare l' iscrizione di un determinato fruitore,
+//	 * ovviamente se la richiesta di rinnovo è effettuata prima della scadenza dell'iscrizione e dopo
+//	 * un certo numero di giorni antecedenti la scadenza.
+//	 * @param f
+//	 */
+//	public boolean rinnovoFruitore(Fruitore f){
+//		LocalDateTime la = LocalDateTime.now();
+//		if (la.isBefore(f.getScadenzaIscrizione()) && la.isAfter(Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione()))) {
+//			f.setInizioIscrizione(la);
+//			f.setScadenzaIscrizione(Data.cambiaMinuto(ConstantsCittadino.NUM_SCADENZA, la));
+//			return true;
+//		} 
+//		return false;
+//	}
 ///**
-// * Metodo crea permette di creare un determinato prestito e di aggiungerlo ai prestiti del fruitore.
-// * @param r
+// * Metodo tempoRinnovoFruitoe permette di calcolare il tempo che il fruitore ha a disposizione
+// * per rinnovare la sua iscrizione.
 // * @param f
 // * @return
 // */
-//	public Prestito crea(Risorsa r, Fruitore f){
-//		Prestito p = new Prestito(r,f.getNome());
-//		r.setNumeroLicenze(r.getNumeroLicenze()-1);
-//		return p;
+//	public LocalDateTime tempoRinnovoFruitore(Fruitore f) {
+//		LocalDateTime la = LocalDateTime.now();
+//		if (la.isBefore(Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione()))) { //è possibile rinnovare da calcoloTerminiPrescritti in poi
+//			return Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione());
+//		}
+//		return null;
 //	}
-
-	public List<Fruitore> getStoricoFruitori() {
-		return storicoFruitori;
-	}
-	
-	public List<Fruitore> getFruitori() {
-		return fruitori;
-	}
 
 	/**
 	 * Metodo prestitiPerFruitore restituisce un HashMap
@@ -171,10 +166,10 @@ public class FruitoreModel {
 	 * prestiti effettuati nell'anno solare.
 	 * @return
 	 */
-	public  HashMap<String, Integer> prestitiPerFruitore(){
-		String s;
+	public  Map <String,Integer> prestitiPerFruitore(){ //creato prestiti storici fruitore esclusivamente per l'interrogazione num prestiti per fruitore 
+		String s;										//cosi ho evitato un triplo for 
 		int conto = 0;
-		HashMap<String, Integer> array = new HashMap<>();
+		Map<String, Integer> array = new HashMap<>();
 		if(!storicoFruitori.isEmpty()){
 			for(Fruitore f: storicoFruitori){
 				for(Prestito p: f.getPrestitiStoriciMiei()){
@@ -190,5 +185,11 @@ public class FruitoreModel {
 		return array;	
 	}	
 
-
+	public List<Fruitore> getStoricoFruitori() {
+		return storicoFruitori;
+	}
+	
+	public List<Fruitore> getFruitori() {
+		return fruitori;
+	}
 }

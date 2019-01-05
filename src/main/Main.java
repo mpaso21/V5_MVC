@@ -1,11 +1,19 @@
 package main;
 
-import controller.LoginController;
+import controller.CreatoreMenu;
+
+
 
 public class Main {
 	public static void main(String[] args) {
 		
-		LoginController c = new LoginController();
-		c.init();
+		CreatoreMenu loginController = new Facade();
+		
+		((Facade)(loginController)).init();
+
+	
+	
+		
+		
 	}
 }

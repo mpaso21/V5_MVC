@@ -23,8 +23,8 @@ public class ConstantsCittadino {
 	public static final String ISCRIZIONE_RINNOVATA = "ISCRIZIONE RINNOVATA";
 	
 	//IN FRUITORE MODEL
-	public static final int NUM_SCADENZA = 5;
-	public static final int NUM_TEMPO_PRIMA_RINNOVO = 1;
+	public static final int NUM_SCADENZA = 10;
+	public static final int NUM_TEMPO_PRIMA_RINNOVO = 3;
 	
 	
 }

@@ -22,6 +22,9 @@ public abstract class RisorsaView {
 	 * input dall'utente.
 	 * @return
 	 */
+	
+	//METODI CREATI ASTRATTI PERCHE HANNO UNA DIVERSA IMPLEMENTAZIONE A SECONDA DEL TIPO 
+	//DI RISORSA UTLIZZATO
 	public abstract Risorsa crea(); 
 	/**
 	 * Metodo stampa fornisce una rappresentazione dell'oggetto
@@ -34,7 +37,7 @@ public abstract class RisorsaView {
 	 * Metodo stampaCategoria mostra la categoria specifica della risorsa in
 	 * questione.
 	 */
-	protected abstract void stampaCategoria();
+	public abstract void stampaCategoria();
 
 	/**	
 	 * Metodo selezionaRisorsa permette di selezionare una determinata risorsa presente
@@ -42,13 +45,15 @@ public abstract class RisorsaView {
 	 * @param c
 	 * @return
 	 */	
+	//MOVE METHOD DA METODO RIMUOVI PRECEDENTE
+	//PARTE DEL METODO RIMUOVI. LA SELEZIONE MESSA NELLA VIEW COME ANCHE LA STAMPA.
 	public Risorsa selezionaRisorsa(List<Risorsa> archivio){
 		if(archivio.isEmpty()){
 			return null;
 		}
 		this.stampaTutti(archivio);
 		int valore = InputDati.leggiIntero(ConstantsRisorsa.NUM_RISORSA, ConstantsRisorsa.INIZIO,archivio.size());
-		return archivio.get(valore -1);							//MEGLIO LASCIARE 1 O CONSTANTS?
+		return archivio.get(valore -1);							
 	}
 
 
@@ -79,7 +84,7 @@ public abstract class RisorsaView {
 	 * @param arr
 	 * @return
 	 */
-	public String stampaConNumeri(List<Risorsa> arr){
+	private String stampaConNumeri(List<Risorsa> arr){
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < arr.size(); i++){
 			sb.append(i+1 + " ");

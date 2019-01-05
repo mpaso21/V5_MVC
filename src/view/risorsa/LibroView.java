@@ -1,9 +1,11 @@
 package view.risorsa;
 
 import java.time.LocalDateTime;
+import builder.LibroBuilder;
 import entity.Libro;
 import entity.Risorsa;
 import mylib.ConstantsRisorsa;
+import mylib.UtilitaControllo;
 import mylib.UtilitaCreazioneCampi;
 
 /**
@@ -15,6 +17,39 @@ import mylib.UtilitaCreazioneCampi;
  *
  */
 public class LibroView extends RisorsaView {
+	
+	/**	
+	 * Metodo creaLibronput permette di inserire in input i valori necessari per creare la risorsa
+	 * libro.
+	 * @return
+	 */
+	@Override
+	public Risorsa crea() {
+		String titolo = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.TITOLO);
+		String autore = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.AUTORE_LIBRO);
+		String lingua = UtilitaCreazioneCampi.creaStringa(ConstantsRisorsa.LINGUA);
+		String genere = UtilitaCreazioneCampi.creaStringa(ConstantsRisorsa.GENERE);
+		String casaEditrice = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.CASA_EDITRICE);
+		int numeroPagine = UtilitaCreazioneCampi.creaNumeroConMin(ConstantsRisorsa.NUM_PAGINE, ConstantsRisorsa.MIN_PAGINE);
+		int numLicenze = UtilitaControllo.randomcompreso(ConstantsRisorsa.MIN_LICENZA,ConstantsRisorsa.MAX_LICENZA);
+		int anno = UtilitaCreazioneCampi.creaNumeroConMinMax(ConstantsRisorsa.ANNO_LIBRO, 0, LocalDateTime.now().getYear());
+		//NEI TEST INSERISCO IO IL NUM LICENZE. NEL PROGRAMMA METTO RANDOM
+
+		LibroBuilder<LibroBuilder> libroBuilder = new LibroBuilder<>();
+		libroBuilder.titolo(titolo);
+		libroBuilder.autore(autore);
+		libroBuilder.lingua(lingua);
+		libroBuilder.genere(genere);
+		libroBuilder.casaEditrice(casaEditrice);
+		libroBuilder.anno(anno);
+		libroBuilder.numeroPagine(numeroPagine);
+		libroBuilder.numLicenze(numLicenze);
+		return libroBuilder.build();
+		
+//		Libro libro = new Libro(titolo, autore, lingua, genere, casaEditrice, anno, numeroPagine, numLicenze);
+//		return libro;
+	}
+	
 	/**
 	 * Metodo stampaLibro fornisce a video una rappresentazione contenente le 
 	 * proprietà della risorsa Libro.
@@ -43,23 +78,6 @@ public class LibroView extends RisorsaView {
 		.append(libro.getNumeroLicenze());
 
 		return stringa.toString();	
-	}
-	/**	
-	 * Metodo creaLibronput permette di inserire in input i valori necessari per creare la risorsa
-	 * libro.
-	 * @return
-	 */
-	@Override
-	public Risorsa crea() {
-		String titolo = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.TITOLO);
-		String autore = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.AUTORE_LIBRO);
-		String lingua = UtilitaCreazioneCampi.creaStringa(ConstantsRisorsa.LINGUA);
-		String genere = UtilitaCreazioneCampi.creaStringa(ConstantsRisorsa.GENERE);
-		String casaEditrice = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.CASA_EDITRICE);
-		int numeroPagine = UtilitaCreazioneCampi.creaNumeroConMin(ConstantsRisorsa.NUM_PAGINE, ConstantsRisorsa.MIN_PAGINE);
-		int anno = UtilitaCreazioneCampi.creaNumeroConMinMax(ConstantsRisorsa.ANNO_LIBRO, 0, LocalDateTime.now().getYear());
-		Libro libro = new Libro(titolo, autore, lingua, genere, casaEditrice, anno, numeroPagine);
-		return libro;
 	}
 
 

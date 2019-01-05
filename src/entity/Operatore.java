@@ -8,7 +8,7 @@ package entity;
 public class Operatore extends Cittadino {
 //AGGIUNTA UNA NUOVA CLASSE
 /**
- * Un operatore è costituito da un nome predefinitoe da un'età
+ * Un operatore è costituito da un nome (predefinito) e da un'età (maggiore di 18)
  * @param nome
  * @param eta
  */

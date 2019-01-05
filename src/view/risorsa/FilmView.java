@@ -1,9 +1,12 @@
 package view.risorsa;
 
 import java.time.LocalDateTime;
+
+import builder.FilmBuilder;
 import entity.Film;
 import entity.Risorsa;
 import mylib.ConstantsRisorsa;
+import mylib.UtilitaControllo;
 import mylib.UtilitaCreazioneCampi;
 
 /**
@@ -15,6 +18,44 @@ import mylib.UtilitaCreazioneCampi;
  *
  */
 public class FilmView extends RisorsaView{
+
+
+	/**	
+	 * Metodo creaFilmInput permette di inserire in input i valori necessari per creare la risorsa
+	 * film.
+	 * @return
+	 */
+	@Override
+	public Risorsa crea() {
+
+		String nome = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.TITOLO);
+		String regista = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.REGISTA);
+		int durata = UtilitaCreazioneCampi.creaNumeroConMin(ConstantsRisorsa.DURATA, 30); //DURATA IN MIN
+		int annoDiUscita = UtilitaCreazioneCampi.creaNumeroConMinMax(ConstantsRisorsa.ANNO_FILM, 1895,LocalDateTime.now().getYear());
+		String casaProduttrice = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.CASA_PRODUTTRICE);
+		String lingua = UtilitaCreazioneCampi.creaStringa(ConstantsRisorsa.LINGUA);
+		String genere = UtilitaCreazioneCampi.creaStringa(ConstantsRisorsa.GENERE);
+		int numLicenze = UtilitaControllo.randomcompreso(ConstantsRisorsa.MIN_LICENZA,ConstantsRisorsa.MAX_LICENZA);
+		
+		FilmBuilder<FilmBuilder> filmBuilder = new FilmBuilder<>();
+		filmBuilder.titolo(nome);
+		filmBuilder.regista(regista);
+		filmBuilder.durata(durata);
+		filmBuilder.annoDiUscita(annoDiUscita);
+		filmBuilder.casaProduttrice(casaProduttrice);
+		filmBuilder.lingua(lingua);
+		filmBuilder.genere(genere);
+		filmBuilder.numLicenze(numLicenze);
+		return filmBuilder.build();
+		 
+		
+		
+//		Film film = new Film(nome, regista,  durata,   //EVITO IL PASSAGGIO DI TUTTI QUESTI PARAMETRI QUI
+//				annoDiUscita, casaProduttrice, lingua, genere, numLicenze);
+//		return film;
+	}
+
+
 	/**
 	 * Metodo stampaFilm fornisce a video una rappresentazione contenente le 
 	 * proprietà della risorsa Film.
@@ -44,25 +85,7 @@ public class FilmView extends RisorsaView{
 		return stringa.toString();	
 
 	}
-	/**	
-	 * Metodo creaFilmInput permette di inserire in input i valori necessari per creare la risorsa
-	 * film.
-	 * @return
-	 */
-	@Override
-	public Risorsa crea() {
 
-		String nome = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.TITOLO);
-		String regista = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.REGISTA);
-		int durata = UtilitaCreazioneCampi.creaNumeroConMin(ConstantsRisorsa.DURATA, 30); //DURATA IN MIN
-		int annoDiUscita = UtilitaCreazioneCampi.creaNumeroConMinMax(ConstantsRisorsa.ANNO_FILM, 1895,LocalDateTime.now().getYear());
-		String casaProduttrice = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.CASA_PRODUTTRICE);
-		String lingua = UtilitaCreazioneCampi.creaStringa(ConstantsRisorsa.LINGUA);
-		String genere = UtilitaCreazioneCampi.creaStringa(ConstantsRisorsa.GENERE);
-		Film film = new Film(nome, regista,  durata, 
-				annoDiUscita, casaProduttrice, lingua, genere);
-		return film;
-	}
 
 	/**
 	 * stampaCategoria stampa a video CATEGORIA FILM

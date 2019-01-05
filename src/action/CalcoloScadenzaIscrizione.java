@@ -1,9 +1,7 @@
 package action;
 
 import java.time.LocalDateTime;
-
 import entity.Fruitore;
-
 import mylib.ConstantsCittadino;
 import mylib.Data;
 
@@ -18,15 +16,14 @@ private Fruitore p;
 	}
 
 	/**
-	 * Metodo calcolo_fine_prestito permette di calcolare la data di 
-	 *  scadenza del prestito che è esattamente 30 giorni dopo la
-	 *   data di inizio prestito.
+	 * Metodo calcoloScadenza permette, avendo una data di iscrizione, di calcolare 
+	 * La scadenza di iscrizione che è esattamente 5 anni dopo la data di iscrizione.
 	 * @return
 	 */
 	public LocalDateTime calcolo(){
 		//METODO CORRETTO: scadenza 5 anni dopo quella di iscrizione
 				// scadenza_iscrizione = Data.cambiaAnno(5, inizio_iscrizione);
-				//DIMOSTRAZIONE METODO: scadenza 5 minuti dopo quella di iscrizione
+				//DIMOSTRAZIONE METODO: scadenza 10 minuti dopo quella di iscrizione
 		//LocalDateTime valore = Data.cambiaAnno(ConstantsCittadino.NUM_SCADENZA, p.getInizioIscrizione());
 		LocalDateTime valore = Data.cambiaMinuto(ConstantsCittadino.NUM_SCADENZA, p.getInizioIscrizione());
 		return valore;

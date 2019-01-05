@@ -14,14 +14,19 @@ public class ConstantsPrestito {
 	public static final String PRESTITI_VUOTO = "NON SONO STATI EFFETTUATI PRESTITI NELL'ANNO SOLARE";
 	public static final String RISORSE_PIU_PRESTATE = "RISORSE PIU PRESTATE NELL'ANNO SOLARE: ";
 	public static final String LIMITE_PRESTITO = "HAI RAGGIUNTO IL LIMITE DI PRESTITI PER QUESTA CATEGORIA";
-	
+	public static final String NUM_PRESTITI_PER_FRUITORE = "Il numero di prestiti per fruitore nell'anno: ";
 	//IN CLASSE LIBRO
-	public static final int DURATA_MAX_PRESTITO_LIBRO = 3;  //30 GG
+	public static final int DURATA_MAX_PRESTITO_LIBRO = 5;  //30 GG
 	public static final int INTERVALLO_RICHIESTA_PROROGA_LIBRO = 3;
 	public static final int NUM_MAX_PRESTITI_LIBRO = 3;
 	
 	//IN CLASSE FILM
-	public static final int DURATA_MAX_PRESTITO_FILM = 3; //30 GG
+	public static final int DURATA_MAX_PRESTITO_FILM = 5; //30 GG
 	public static final int INTERVALLO_RICHIESTA_PROROGA_FILM = 3;
 	public static final int NUM_MAX_PRESTITI_FILM = 3;
+	
+	//
+	public static final String DURATA_MAX_PRESTITO_KEY = "DURATA_MAX_PRESTITO"; //30 GG
+	public static final String INTERVALLO_RICHIESTA_PROROGA_KEY = "INTERVALLO_RICHIESTA_PROROGA";
+	public static final String NUM_MAX_PRESTITI_KEY = "NUM_MAX_PRESTITI";
 }

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import action.Calcolo;
 import action.CalcoloScadenzaIscrizione;
-import mylib.ConstantsPrestito;
-import mylib.ConstantsRisorsa;
 import mylib.Data;
 
 /**
@@ -68,26 +66,26 @@ public class Fruitore extends Cittadino{
 //		return this.prestitiLibro>= ConstantsPrestito.NUM_MAX_PRESTITI_LIBRO? false : true;
 //	}
 	
-	/**
-	 * Metodo controlloRichiestaPrestitoLibro restituisce un valore indicante
-	 * la possibilità o meno di effettuare prestiti per la categoria libro.
-	 * @return
-	 */
-	public boolean controlloRichiestaPrestitoLibro(){
-		int valore = getPrestitiPerTipo(ConstantsRisorsa.LIBRO, prestitiAttualiMiei).size();
-		return valore >=ConstantsPrestito.NUM_MAX_PRESTITI_LIBRO? false : true;
-	}
-	
-	/**
-	 *  Metodo controlloRichiestaPrestitoFilm restituisce un valore indicante	
-	 * la possibilità o meno di effettuare prestiti per la categoria film.
-	 * @return
-	 */
-	public boolean controlloRichiestaPrestitoFilm(){
-//		int valore = getPrestitiPerTipo(ConstantsRisorsa.FILM, prestitiAttualiMiei).size();
-//		return valore >=ConstantsPrestito.NUM_MAX_PRESTITI_FILM? false : true;
-		return controlloRichiestaPrestitoRisorsa(ConstantsRisorsa.FILM, ConstantsPrestito.NUM_MAX_PRESTITI_FILM);
-	}
+//	/**
+//	 * Metodo controlloRichiestaPrestitoLibro restituisce un valore indicante
+//	 * la possibilità o meno di effettuare prestiti per la categoria libro.
+//	 * @return
+//	 */
+//	public boolean controlloRichiestaPrestitoLibro(){
+//		int valore = getPrestitiPerTipo(ConstantsRisorsa.LIBRO, prestitiAttualiMiei).size();
+//		return valore >=ConstantsPrestito.NUM_MAX_PRESTITI_LIBRO? false : true;
+//	}
+//	
+//	/**
+//	 *  Metodo controlloRichiestaPrestitoFilm restituisce un valore indicante	
+//	 * la possibilità o meno di effettuare prestiti per la categoria film.
+//	 * @return
+//	 */
+//	public boolean controlloRichiestaPrestitoFilm(){
+////		int valore = getPrestitiPerTipo(ConstantsRisorsa.FILM, prestitiAttualiMiei).size();
+////		return valore >=ConstantsPrestito.NUM_MAX_PRESTITI_FILM? false : true;
+//		return controlloRichiestaPrestitoRisorsa(ConstantsRisorsa.FILM, ConstantsPrestito.NUM_MAX_PRESTITI_FILM);
+//	}
 	
 	//PIU GENERICO
 	public boolean controlloRichiestaPrestitoRisorsa(String tipo, int valoreMax){
@@ -103,7 +101,10 @@ public class Fruitore extends Cittadino{
 	 * @param prestiti
 	 * @return
 	 */
-	//nEL CODICE PRIMA ERA ESTRAI
+	//C'E ANCHE IN PRESTITO ENTITY CONTROLLER NON VA BENE RIPETUTO
+	 
+	//POTREBBE ESSERE SPOSTATO IN PRESTITO MODEL 
+	//MA VA BENE ANCHE QUI 
 	public List<Prestito> getPrestitiPerTipo(String tipoPrestito, List<Prestito> prestiti) {
 		List<Prestito> prestitiTipo = new ArrayList<Prestito>();
 		for(Prestito p : prestiti) { //passo l'arrayList prestiti generico perchè cosi posso usarlo sia per prestiti storici che prestiti attuali
@@ -114,6 +115,28 @@ public class Fruitore extends Cittadino{
 		return prestitiTipo;
 	}
 
+	/**
+	 * Metodo controlloScadenzaPrestitiFruitore controlla per ogni prestito, contenuto
+	 * nell'elenco di prestiti dei fruitori, la scadenza.Se il prestito è scaduto, viene
+	 * rimosso dall'elenco.
+	 * @param d
+	 */ //HO TOLTO PARAMETRO DATA E L'HO INSERITO ALL'INTERNO
+	//METODO INSERITO QUI PERCHE' IL MIO MODEL RAPPRESENTA L'ARCHIVIO STORICO DI PRESTITI E QUINID
+	//NON DEVE CONTROLLARE LE SCADENZE
+	public void controlloScadenzaPrestitiFruitore() {
+		LocalDateTime data = LocalDateTime.now();
+		if (!this.prestitiAttualiMiei.isEmpty()) {
+				List<Prestito> toRemove = new ArrayList<Prestito>();
+				for (Prestito p : prestitiAttualiMiei) {
+					if (p.getFine_prestito().isBefore(data)) {
+						toRemove.add(p);
+						p.getR().setNumeroLicenze(p.getR().getNumeroLicenze()+1);
+					} 
+				}
+				prestitiAttualiMiei.removeAll(toRemove);
+			} 
+		} 
+	
 	public List<Prestito> getPrestitiStoriciMiei() {
 		return prestitiStoriciMiei;
 	}

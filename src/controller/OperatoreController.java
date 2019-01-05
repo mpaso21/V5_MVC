@@ -1,9 +1,15 @@
 package controller;
 
-import java.util.List;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import controller.entitycontroller.FilmEntityController;
 import controller.entitycontroller.LibroEntityController;
+import controller.entitycontroller.PrestitoEntityController;
+import controller.entitycontroller.RisorsaEntityController;
 import entity.Operatore;
 import entity.Risorsa;
 import mylib.Constants;
@@ -12,22 +18,20 @@ import mylib.ConstantsRisorsa;
 import mylib.InputDati;
 import mylib.MyMenu;
 import mylib.UtilitaCreazioneCampi;
-import view.risorsa.FilmView;
-import view.risorsa.LibroView;
 import view.cittadino.OperatoreView;
 
 public class OperatoreController extends CreatoreMenu {
 
 	 
-	MyMenu m = crea();
+	MyMenu menuOperatore = crea();
 	private boolean uscita = false;
 	
-	private LoginController mainManager;
+	private Controller mainManager;
 	private OperatoreView operatoreView ;
 
 	
-	public OperatoreController(LoginController mainManager){//BRUTTA DIPEDENZA
-		this.mainManager = mainManager; //SE SONO ENTRAMBI NELLO STESSO PACKAGE LA DIPENDENZA C'E'?
+	public OperatoreController(Controller mainManager){
+		this.mainManager = mainManager;
 		this.operatoreView = new  OperatoreView();
 	}	
 
@@ -35,8 +39,7 @@ public class OperatoreController extends CreatoreMenu {
 	public void init(Operatore operatore)	{
 
 		do{
-
-			switch(m.scegli()){
+			switch(menuOperatore.scegli()){
 			case 1:
 				mainManager.getFruitore().stampaFruitoriAttuali();
 				break;
@@ -47,8 +50,7 @@ public class OperatoreController extends CreatoreMenu {
 				rimuoviRisorsa();
 				break;
 			case 4:
-				stampaLibri();
-				stampaFilm();
+				stampaRisorse();
 				break;
 			case 5:
 				ricercaTitolo();
@@ -66,26 +68,23 @@ public class OperatoreController extends CreatoreMenu {
 				mainManager.getFruitore().stampaStoricoFruitori();
 				break;
 			case 10:
-				stampaLibriStorico();
-				stampaFilmStorico();
+				stampaStoricoRisorse();
 				break;
 			case 11:
-				stampaPrestitiAttualiTotali();
+				this.stampaStoricoPrestiti();
+				//stampaStoricoPrestiti();
 				break;
 			case 12:
-				stampaPrestitiStoriciTotali();
+				operatoreView.stampaNumPrestitiTotali(numPrestitiTotali());
 				break;
 			case 13:
-				stampaNumPrestitiPerAnno();
+				operatoreView.stampaNumProrogheTotali(numProrogheTotali());
 				break;
 			case 14:
-				stampaNumProroghePerAnno();
+				operatoreView.stampaNuMPrestitiPerFruitore(mainManager.getFruitore().numPrestitiPerFruitore());
 				break;
 			case 15:
-				mainManager.getFruitore().stampaNumPrestitiPerFruitore();
-				break;
-			case 16:
-				stampaRisorsaPiuPrestata();
+				operatoreView.stampaRisorsaPiuPrestata(risorsaPiuPrestataTotale());
 				break;
 			case 0:
 				uscita = true;
@@ -104,11 +103,11 @@ public class OperatoreController extends CreatoreMenu {
 		}
 	}
 
-	/* TENTARE DISPERATAMENTE DI IMPLEMENTARE IL PATTERN COMMAND*/
+	
 	public void aggiungiRisorsa() {
 		int selezione = InputDati.selezionaElementoDaArray(ConstantsRisorsa.TIPOLOGIE_RISORSE);
 		String key = ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione];
-		 mainManager.getRisorsaControllerByKey(key).crea();
+		mainManager.getRisorsaControllerByKey(key).crea();
 //		if(ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione].equals("LIBRI")){
 //			mainManager.getLibroController().crea(); 
 //		}
@@ -116,103 +115,132 @@ public class OperatoreController extends CreatoreMenu {
 //			mainManager.getFilmController().crea();
 //		}
 	}
+	
+
 
 	public void rimuoviRisorsa(){
 		int selezione = InputDati.selezionaElementoDaArray(ConstantsRisorsa.TIPOLOGIE_RISORSE);
-		if(ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione].equals("LIBRI")){
-			mainManager.getLibroController().rimuovi(); 
-		}
-		else if(ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione].equals("FILM")){
-			mainManager.getFilmController().rimuovi();
-		}
+		String key = ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione];
+		
+		Risorsa r = mainManager.getRisorsaControllerByKey(key).selezionaRisorsa();
+		
+		mainManager.getRisorsaControllerByKey(key).rimuoviRisorsa(r);
 	}
 
-	public void stampaLibri(){
-		((LibroView)(mainManager.getLibroController().getRisorsaView())).stampaCategoria(); 
-		mainManager.getLibroController().stampaArchivio();					
+	public void stampaRisorse(){
+		
+		for(String s : ConstantsRisorsa.TIPOLOGIE_RISORSE) {
+			mainManager.getRisorsaControllerByKey(s).getRisorsaView().stampaCategoria();
+			mainManager.getRisorsaControllerByKey(s).stampaArchivio();
+		}				
 	}
 
-	public void stampaFilm() {
-		((FilmView)(mainManager.getFilmController().getRisorsaView())).stampaCategoria();
-		mainManager.getFilmController().stampaArchivio();
-	}
-
-	//DA SEMPLIFICARE COME AGGIUNGI METODO E RIMUOVI
 	public void ricercaTitolo(){
 		int selezione = InputDati.selezionaElementoDaArray(ConstantsRisorsa.TIPOLOGIE_RISORSE);
 		String inputTitolo = UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.TITOLO);
-		List<Risorsa> risorse;
 
-		if(ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione].equals("LIBRI")){
-			risorse = mainManager.getLibroController().ricercaTitolo(inputTitolo);
-			mainManager.getLibroController().stampaRisorseTrovate(risorse);
-		}
-		else if(ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione].equals("FILM")){
-
-			risorse = mainManager.getFilmController().ricercaTitolo(inputTitolo);
-			mainManager.getFilmController().stampaRisorseTrovate(risorse);
-		}
+		String key = ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione];
+		List<Risorsa> risorse = mainManager.getRisorsaControllerByKey(key).ricercaTitolo(inputTitolo);
+		mainManager.getRisorsaControllerByKey(key).stampaRisorseTrovate(risorse);
 	}
 
+	
 	public void ricercaGenere(){
 		int selezione = InputDati.selezionaElementoDaArray(ConstantsRisorsa.TIPOLOGIE_RISORSE);
 		String inputGenere= UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.GENERE);
-		List<Risorsa> risorse;
-
-		if(ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione].equals("LIBRI")){
-			risorse = mainManager.getLibroController().ricercaGenere(inputGenere);
-			mainManager.getLibroController().stampaRisorseTrovate(risorse);
-		}
-		else if(ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione].equals("FILM")){
-
-			risorse = mainManager.getFilmController().ricercaGenere(inputGenere);
-			mainManager.getFilmController().stampaRisorseTrovate(risorse);
-		}
+		
+		String key = ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione];
+		List<Risorsa> risorse = mainManager.getRisorsaControllerByKey(key).ricercaGenere(inputGenere);
+		mainManager.getRisorsaControllerByKey(key).stampaRisorseTrovate(risorse);
+		
+//		if(ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione].equals("LIBRI")){
+//			risorse = mainManager.getLibroController().ricercaGenere(inputGenere);
+//			mainManager.getLibroController().stampaRisorseTrovate(risorse);
+//		}
+//		else if(ConstantsRisorsa.TIPOLOGIE_RISORSE[selezione].equals("FILM")){
+//
+//			risorse = mainManager.getFilmController().ricercaGenere(inputGenere);
+//			mainManager.getFilmController().stampaRisorseTrovate(risorse);
+//		}
 	}
 
-	public void ricercaAutore(){
+	public void ricercaAutore() {
 		String inputAutore= UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.AUTORE_LIBRO);
-		List<Risorsa> risorse = ((LibroEntityController) mainManager.getLibroController()).ricercaAutore(inputAutore);
-		mainManager.getLibroController().stampaRisorseTrovate(risorse);
+		List<Risorsa> risorse = ((LibroEntityController) mainManager.getRisorsaControllerByKey(ConstantsRisorsa.LIBRO)).ricercaAutore(inputAutore);
+		mainManager.getRisorsaControllerByKey(ConstantsRisorsa.LIBRO).stampaRisorseTrovate(risorse);
 	}
-
-	public void ricercaRegista(){
+	
+	public void ricercaRegista() {
 		String inputRegista= UtilitaCreazioneCampi.creaStringaConSpazi(ConstantsRisorsa.REGISTA);
-		List<Risorsa> risorse = ((FilmEntityController) mainManager.getFilmController()).ricercaRegista(inputRegista);
-		mainManager.getFilmController().stampaRisorseTrovate(risorse);
+		List<Risorsa> risorse =((FilmEntityController) mainManager.getRisorsaControllerByKey(ConstantsRisorsa.FILM)).ricercaRegista(inputRegista);
+		mainManager.getRisorsaControllerByKey(ConstantsRisorsa.FILM).stampaRisorseTrovate(risorse);
 	}
 
-	public void stampaLibriStorico(){
-		((LibroView)(mainManager.getLibroController().getRisorsaView())).stampaCategoria(); 
-		mainManager.getLibroController().stampaStoricoArchivio();
-	}	
-
-	public void stampaFilmStorico(){
-		((FilmView)(mainManager.getFilmController().getRisorsaView())).stampaCategoria(); 
-		mainManager.getFilmController().stampaStoricoArchivio();
-	}	
-
-	
-	public void stampaPrestitiAttualiTotali(){
-		mainManager.getFruitore().stampaPrestitiAttualiTuttiFruitori();
-	}
-
-	public void stampaPrestitiStoriciTotali(){
-		mainManager.getFruitore().stampaPrestitiStoriciFruitori();
+	public void stampaStoricoRisorse(){
+		for(String s : ConstantsRisorsa.TIPOLOGIE_RISORSE) {
+			mainManager.getRisorsaControllerByKey(s).getRisorsaView().stampaCategoria();
+			mainManager.getRisorsaControllerByKey(s).stampaStoricoArchivio();
+		}	
 	}
 	
-	public void stampaNumPrestitiPerAnno(){
-		mainManager.getPrestitoLibroController().prestitiPerAnno();
+
+//	public void stampaPrestitiAttualiTotali(){
+//		mainManager.getFruitore().stampaPrestitiAttualiTuttiFruitori();
+//	}
+
+	//LOGICA + STAMPA
+	public void stampaStoricoPrestiti(){
+		for(String s : ConstantsRisorsa.TIPOLOGIE_RISORSE) {
+			 PrestitoEntityController controller =  mainManager.getPrestitoControllerByKey(s);
+			 RisorsaEntityController contrRis = mainManager.getRisorsaControllerByKey(s); 
+			 contrRis.getRisorsaView().stampaCategoria();
+			 controller.stampaPrestiti(controller.getPrestitoModel().getArchivioStoricoPrestiti());
+		}	
+	}
+	
+//	public void stampaStoricoPrestiti(){
+//		mainManager.getFruitore().stampaPrestitiStoriciTuttiFruitori();
+//	}
+
+	//E' LOGICA MA INTERAGISCE CON CLASSE PRESTITOCONTROLLER
+	//HO PREFERITO FARLA QUI PIUTTOSTO CHE CREARE UNA CLASSE OPERATORE MODEL
+	public int numPrestitiTotali(){
+		int count = 0;
+		for(String s : ConstantsRisorsa.TIPOLOGIE_RISORSE) {
+			count = count + mainManager.getPrestitoControllerByKey(s).prestitiPerAnno();
+		}
+		return count;
+	}
+	
+	public int numProrogheTotali(){
+		int count = 0;
+		for(String s : ConstantsRisorsa.TIPOLOGIE_RISORSE) {
+		count = count + mainManager.getPrestitoControllerByKey(s).proroghePerAnno();
+		}
+		return count;
+	}
+	
+
+	public Map<String, Integer> risorsaPiuPrestataTotale(){
+	Map<String, Integer> ris = new HashMap<>();
+	Map<String, Integer> nuovo = new HashMap<>();
+		for(String s : ConstantsRisorsa.TIPOLOGIE_RISORSE) {
+			ris.putAll(mainManager.getPrestitoControllerByKey(s).getMappaRisorsaPiuPrestata());
+		}
+		if(ris.isEmpty()){
+			return ris;
+		}
+		//TROVO IL MAX DA UN HASHMAP
+		 int maxValueInMap=(Collections.max(ris.values()));  
+	        for (Entry<String, Integer> entry : ris.entrySet()) {  
+	            if (entry.getValue()==maxValueInMap) {
+	            	nuovo.put(entry.getKey(), entry.getValue());
+	            }
+	        }
+	     return nuovo;
 	}
 
-	public void stampaNumProroghePerAnno(){
-		mainManager.getPrestitoLibroController().proroghePerAnno();
-	}
-
-	public void stampaRisorsaPiuPrestata(){ //METODO STAMPA RISORSA PIU PRSTATO MESSO IN FRUITORE CONTROLLER PERCHE' DA QUI NON POTEVO ACCEDERE AL PRESTITO
-		mainManager.getPrestitoLibroController().risorsaPiuPrestata();
-	}
-
+	
 
 	@Override
 	protected String titolo() {
@@ -234,12 +262,12 @@ public class OperatoreController extends CreatoreMenu {
 				"RICERCA RISORSA- PER REGISTA",
 				"STAMPA STORICO FRUITORI",
 				"STAMPA STORICO RISORSE",
-				"STAMPA PRESTITI ATTUALI",
+//				"STAMPA PRESTITI ATTUALI",
 				"STAMPA STORICO PRESTITI",
 				"NUMERO PRESTITI PER ANNO",
 				"NUMERO PROROGHE PER ANNO",
 				"NUMERO PRESTITI PER FRUITORE",
-				"RISORSA PIU PRESTATA"}; 
+				"NOME RISORSA PIU PRESTATA"}; 
 		
 		return opzioni;
 	}

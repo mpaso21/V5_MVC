@@ -41,7 +41,7 @@ public class PrestitoFilmView extends PrestitoView {
 	@Override
 	protected String stampaPrestito(Prestito p){ //STAMPA IL PRESTITO CON LA RISORSA
 		StringBuilder sb = new StringBuilder();
-		if(p.getR().getTipo().equalsIgnoreCase(ConstantsRisorsa.FILM)){				
+		if(p.getR().getTipo().equalsIgnoreCase(ConstantsRisorsa.FILM)){		 //E' NECESSARIO??		
 			if(p.getNumero_rinnovo() > 0){
 				sb.append(String.format("%s", toString(p)));
 				sb.append("SI");

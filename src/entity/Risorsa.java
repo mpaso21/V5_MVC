@@ -1,8 +1,9 @@
 package entity;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import mylib.ConstantsRisorsa;
-import mylib.UtilitaControllo;
 
 /**
  * Classe Risorsa rappresenta una risorsa, di qualunque tipo, presente nell'archivio,
@@ -17,25 +18,30 @@ public class Risorsa {
 	protected String lingua;
 	protected int numeroLicenze;
 	protected String tipo;
+	
+	protected Map<String, Integer> costantiCalcoloRisorsa;
 	/**
 	 *  Costruttore Risorsa. Una risorsa è costituita da un nome, genere, lingua, da un numero di licenze
 	 *  e da un tipo di Risorsa.
 	 * @param nome
 	 */
-	public Risorsa(String nome, String genere, String lingua){
+	public Risorsa(String nome, String genere, String lingua, int numeroLicenze){
 		this.nome = nome;
 		this.genere = genere; //GENERE SPOSTATO QUI PERCHE' COMUNE A LIBRO/FILM-> REFACTOR MOVE FIELD 
 		this.lingua = lingua; //LINGUA SPOSTATO QUI PERCHE' COMUNE A LIBRO/FILM-> REFACTOR MOVE FIELD 
-		this.numeroLicenze = UtilitaControllo.randomcompreso(ConstantsRisorsa.MIN_LICENZA,ConstantsRisorsa.MAX_LICENZA); //TOLTO METODO GENERA NUM LICENZA E COLLOCATO DIRETTAMENTE QUI
-		this.tipo = ConstantsRisorsa.RISORSA; //INSERITO CAMPO PER TIPO RISORSA												//METODO GENERA NUM LICENZA POCO TESTABILE PERCHE?
+		this.numeroLicenze = numeroLicenze; //UtilitaControllo.randomcompreso(ConstantsRisorsa.MIN_LICENZA,ConstantsRisorsa.MAX_LICENZA); //TOLTO METODO GENERA NUM LICENZA E COLLOCATO DIRETTAMENTE QUI
+		this.tipo = ConstantsRisorsa.RISORSA; //INSERITO CAMPO PER TIPO RISORSA		//METODO GENERA NUM LICENZA POCO TESTABILE PERCHE?
+		this.costantiCalcoloRisorsa = new HashMap<>();
 	}
+	//NUMERO LICENZE PASSATO PER PARAMETRO COSI TESTABILE
+	
 	//TOLTO METODO GENERA NUM LICENZA
 	
 	//METODO TOSTRING, STRINGA STORICO, STRINGA STORICO INTESTAZIONE SPOSTATI IN RISORSA VIEW PERCHE'
 	//RELATIVI ALLE STAMPE -> REFACTOR MOVE METHOD
 	
 	//HO RISPETTATO IL SINGLE RESPONSABILITY PERCHE' HO SUDDIVISO LE RESPONSABILITA', RISORSA SI OCCUPA
-//SOLO DI GESTIRE GLI ATTRIBUTI, NON DELLE STAMPE
+	//SOLO DI GESTIRE GLI ATTRIBUTI, NON DELLE STAMPE
 	
 	//METODO EQUALS LASCIATO IN RISORSA PERCHE' APPARTIENE A UNA RISORSA.
 	//NON NEL RISORSA MODEL CHE RAPPRESENTA UN ARRAY DI RISORSE.
@@ -83,6 +89,12 @@ public class Risorsa {
 	public String getLingua() {
 		return lingua;
 	}
+
+	public Integer getCostantiCalcoloRisorsaByKey(String stringa) {
+		return costantiCalcoloRisorsa.get(stringa);
+	}
+	
+	
 
 	
 }

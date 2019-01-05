@@ -2,8 +2,8 @@ package view.cittadino;
 
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import entity.Fruitore;
 import mylib.Constants;
 import mylib.ConstantsCittadino;
@@ -27,7 +27,7 @@ public class FruitoreView {
 	 */
 	public Fruitore creaFruitoreInput(){
 		String nome = mylib.InputDati.creaNome(); //ho spostato i metodi di cittadino in mylib ->MOVE METHOD
-		int eta =  mylib.InputDati.creaEta();  //public visibilita' a creaEta per farli vedere
+		int eta =  mylib.InputDati.creaEta(); 
 		if(eta>=Constants.MAGGIORENNE){
 			return new Fruitore(nome,eta);
 		}else{
@@ -61,7 +61,7 @@ public class FruitoreView {
 /**
  * Metodo stampaIntestazioneFruitore stampa a video l'intestazione per un oggetto di tipo Fruitore.
  */
-	public void stampaIntestazioneFruitore(){
+	private void stampaIntestazioneFruitore(){
 		StringBuilder sb = new StringBuilder();
 		sb.append("-------------------------------------------------------------------------------------------\n")
 		.append(String.format("%10s | %15s | %5s | %20s | %20s\n" , "ID", "NOME", "ETA", "ISCRIZIONE", "SCADENZA"))
@@ -77,6 +77,7 @@ public class FruitoreView {
 		String id = InputDati.leggiStringaNonVuota(mylib.Constants.RICHIESTA_ID);
 		return id;
 	}
+
 
 	public void stampaFruitoreNonTrovato() {
 		System.out.println(ConstantsCittadino.ID_NON_PRESENTE);
@@ -103,13 +104,18 @@ public class FruitoreView {
 	public void stampaIdFruitore(String id){
 		System.out.println(ConstantsCittadino.ASSEGNO_ID + id);
 	}
-
-	public void stampaPrestitiPerFruitore(HashMap<String,Integer> map){
-		System.out.println(Arrays.asList(map)); 
-	}
+//
+//	public void stampaPrestitiPerFruitore(Map<String,Integer> map){
+//		System.out.println(Arrays.asList(map)); 
+//	}
 
 	public void stampaIscrizioneRinnovata() {
 		System.out.println(ConstantsCittadino.ISCRIZIONE_RINNOVATA);
+	}
+
+	public boolean messaggioIdGiaPresente() {
+		System.out.println("L'ID CHE HAI SCELTO è GIA PRESENTE!");
+		return true;
 	}
 
 

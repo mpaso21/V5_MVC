@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import entity.Fruitore;
 import entity.Prestito;
 import entity.Risorsa;
 
@@ -17,7 +16,7 @@ import entity.Risorsa;
  */
 public class PrestitoModel {
 
-	private List<Prestito> prestitiStorico; //PRESTITO STORICO
+	private List<Prestito> prestitiStorico; //ARCHIVIO STORICO DEI PRESTITI
 /**
  * Un oggetto di tipo PrestitoModel è costituito da una lista di prestiti che
  * rappresentano i prestiti storici.
@@ -31,47 +30,14 @@ public class PrestitoModel {
 	 * storici, ai prestiti dei fruitori e ai prestitiStoriciFruitori.
 	 * @param p
 	 */
+	
+	//UTILIZZATO SUI PRESTITI STORICI, COME SUI PRESTITI ATTUALI
 	public void aggiungiPrestito(Prestito p, List<Prestito> prestitiFruitore, List <Prestito> prestitiStoriciFruitore){
 		prestitiStorico.add(p);
 		prestitiFruitore.add(p);
 		prestitiStoriciFruitore.add(p);
 	}
-	/**
-	 * Metodo controlloScadenzaPrestitiFruitore controlla per ogni prestito, contenuto
-	 * nell'elenco di prestiti dei fruitori, la scadenza.Se il prestito è scaduto, viene
-	 * rimosso dall'elenco.
-	 * @param d
-	 */
-	public void controlloScadenzaPrestitiFruitore(LocalDateTime d, List<Prestito> prestitiFruitore) {
-		if (!prestitiFruitore.isEmpty()) {
-
-			List<Prestito> toRemove = new ArrayList<Prestito>();
-
-			for (Prestito p : prestitiFruitore) {
-				if (p.getFine_prestito().isBefore(d)) {
-					toRemove.add(p);
-					p.getR().setNumeroLicenze(p.getR().getNumeroLicenze()+1);
-				} 
-			}
-			prestitiFruitore.removeAll(toRemove);
-		} 
-	}
-	/**
-	 * Metodo controlloScadenzaPrestitiListaFruitore controlla per ogni prestito, contenuto
-	 * nell'elenco di prestiti del fruitore, la scadenza.Se il prestito è scaduto, viene
-	 * rimosso dall'elenco. A differenza del metodo sopra, questo itera su tutti i fruitori.
-	 * @param d
-	 */
-	public void controlloScadenzaPrestitiListaFruitori(LocalDateTime d, List<Fruitore> fruitori){
-		for(Fruitore f: fruitori){
-			controlloScadenzaPrestitiFruitore(d, f.getPrestiti());
-		}
-	}
 	
-	public List<Prestito> getArchivioStoricoPrestiti() {
-		return prestitiStorico;
-	}
-
 	/**
 	 * Metodo prestitiPerAnno restituisce il numero di prestiti
 	 * effettuati nell'anno solare.
@@ -108,7 +74,7 @@ public class PrestitoModel {
 	 * del maggior numero di prestiti per anno solare
 	 * @return
 	 */
-		public HashMap<String,Integer >risorsaPiuPrestataPerAnno(){
+		public Map <String,Integer> risorsaPiuPrestataPerAnno(){
 			int conteggioTemp = 0;
 			Risorsa risTemp;
 			Map<String, Integer> ris = new HashMap<>();
@@ -127,20 +93,62 @@ public class PrestitoModel {
 						}
 					}
 				}
-				
-				if(conteggioTemp > max) {
-					max = conteggioTemp;
-					ris.clear();
-					String s =  risTemp.getTipo() + "->" + risTemp.getNome();
-					ris.put(s, max);
-				}
-				else if (conteggioTemp == max){
-					String s =  risTemp.getTipo() + "->" + risTemp.getNome();
-					ris.put(s,conteggioTemp);
-				}
+				trovaMaxRisorsa(conteggioTemp, max, ris, risTemp);
 			}
-			return (HashMap<String, Integer>) ris;
+			return (HashMap<String, Integer>) ris; //RITORNO UN HASHMAP SE CE NE E' PIU' DI UNA
 		}
+		
+		
+	private void trovaMaxRisorsa(int conteggioTemp, int max, Map<String,Integer> ris, Risorsa risTemp){
+
+		if(conteggioTemp > max) {
+			max = conteggioTemp;
+			ris.clear();
+			String s =  risTemp.getTipo() + "->" + risTemp.getNome();
+			ris.put(s, max);
+		}//PUO'SUCCEDERE CHE SONO DUE LE RISORSE PIU PRESTATE NELL'ANNO
+		else if (conteggioTemp == max){//NON RIPULISCO L'ARRAY E AGGIUNGO SOLO
+			String s =  risTemp.getTipo() + "->" + risTemp.getNome();
+			ris.put(s,conteggioTemp);
+		}
+	}
+	
+//	/**
+//	 * Metodo controlloScadenzaPrestitiFruitore controlla per ogni prestito, contenuto
+//	 * nell'elenco di prestiti dei fruitori, la scadenza.Se il prestito è scaduto, viene
+//	 * rimosso dall'elenco.
+//	 * @param d
+//	 */
+	//SPOSTATO IN FRUITORE
+//	public void controlloScadenzaPrestitiFruitore(LocalDateTime d, List<Prestito> prestitiFruitore) {
+//		if (!prestitiFruitore.isEmpty()) {
+//				List<Prestito> toRemove = new ArrayList<Prestito>();
+//				for (Prestito p : prestitiFruitore) {
+//					if (p.getFine_prestito().isBefore(d)) {
+//						toRemove.add(p);
+//						p.getR().setNumeroLicenze(p.getR().getNumeroLicenze()+1);
+//					} 
+//				}
+//				prestitiFruitore.removeAll(toRemove);
+//			} 
+//		}
+//	/**
+//	 * Metodo controlloScadenzaPrestitiListaFruitore controlla per ogni prestito, contenuto
+//	 * nell'elenco di prestiti del fruitore, la scadenza.Se il prestito è scaduto, viene
+//	 * rimosso dall'elenco. A differenza del metodo sopra, questo itera su tutti i fruitori.
+//	 * @param d
+//	 */
+//	public void controlloScadenzaPrestitiListaFruitori(LocalDateTime d, List<Fruitore> fruitori){
+//		for(Fruitore f: fruitori){
+//			controlloScadenzaPrestitiFruitore(d, f.getPrestiti());
+//		}
+//	}
+//	
+
+	public List<Prestito> getArchivioStoricoPrestiti() {
+		return prestitiStorico;
+	}
+
 }
 
 

@@ -27,12 +27,12 @@ public class Fruitore extends Cittadino{
 	//HO TOLTO L'ATTRIBUTO DI TIPO ARCHIVIOPRESTITI CHIAMATO ARCHIVIO STORICO PRESTITI
 	// QUESTO RAPPRESENTA IL MIO PRESTITO MODEL -> IN PRESTITO MODEL
 	/**
-	 * Costruttore classe Fruitore. Ciascun fruitore è composto da un nome, da una data
+	 * Costruttore classe Fruitore. Ciascun fruitore ï¿½ composto da un nome, da una data
 	 * di iscrizione e da una data di scadenza dell'iscrizione.
 	 * @param nome
 	 */
-	public Fruitore(String nome, int età){
-		super(nome, età);
+	public Fruitore(String nome, int eta){
+		super(nome, eta);
 		this.inizio_iscrizione = Data.creaData(); 
 		this.scadenza_iscrizione = calcolo_fine_iscrizione(); //Data.cambiaAnno(5, inizio_iscrizione);
 //		prestitiFilm = 0;   	
@@ -42,7 +42,7 @@ public class Fruitore extends Cittadino{
 	}   
 	
 	//CAMBIA MINUTO IO USEREI UN METODO QUI 
-	public LocalDateTime calcolo_fine_iscrizione(){
+	private LocalDateTime calcolo_fine_iscrizione(){
 		Calcolo calcoloFine = new CalcoloScadenzaIscrizione(this);
 		return calcoloFine.calcolo();
 	}
@@ -68,7 +68,7 @@ public class Fruitore extends Cittadino{
 	
 //	/**
 //	 * Metodo controlloRichiestaPrestitoLibro restituisce un valore indicante
-//	 * la possibilità o meno di effettuare prestiti per la categoria libro.
+//	 * la possibilitï¿½ o meno di effettuare prestiti per la categoria libro.
 //	 * @return
 //	 */
 //	public boolean controlloRichiestaPrestitoLibro(){
@@ -78,7 +78,7 @@ public class Fruitore extends Cittadino{
 //	
 //	/**
 //	 *  Metodo controlloRichiestaPrestitoFilm restituisce un valore indicante	
-//	 * la possibilità o meno di effettuare prestiti per la categoria film.
+//	 * la possibilitï¿½ o meno di effettuare prestiti per la categoria film.
 //	 * @return
 //	 */
 //	public boolean controlloRichiestaPrestitoFilm(){
@@ -107,7 +107,7 @@ public class Fruitore extends Cittadino{
 	//MA VA BENE ANCHE QUI 
 	public List<Prestito> getPrestitiPerTipo(String tipoPrestito, List<Prestito> prestiti) {
 		List<Prestito> prestitiTipo = new ArrayList<Prestito>();
-		for(Prestito p : prestiti) { //passo l'arrayList prestiti generico perchè cosi posso usarlo sia per prestiti storici che prestiti attuali
+		for(Prestito p : prestiti) { //passo l'arrayList prestiti generico perchï¿½ cosi posso usarlo sia per prestiti storici che prestiti attuali
 			if(p.getTipoRisorsa().equalsIgnoreCase(tipoPrestito)){
 				prestitiTipo.add(p);
 			}
@@ -117,7 +117,7 @@ public class Fruitore extends Cittadino{
 
 	/**
 	 * Metodo controlloScadenzaPrestitiFruitore controlla per ogni prestito, contenuto
-	 * nell'elenco di prestiti dei fruitori, la scadenza.Se il prestito è scaduto, viene
+	 * nell'elenco di prestiti dei fruitori, la scadenza.Se il prestito ï¿½ scaduto, viene
 	 * rimosso dall'elenco.
 	 * @param d
 	 */ //HO TOLTO PARAMETRO DATA E L'HO INSERITO ALL'INTERNO

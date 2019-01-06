@@ -13,10 +13,11 @@ import entity.Prestito;
 
 import mylib.Constants;
 import mylib.ConstantsCittadino;
+import mylib.Data;
 
 
 /**
- * Metodo FruitoreModel rappresenta il modello nonchè la logica applicativa
+ * Metodo FruitoreModel rappresenta il modello nonchï¿½ la logica applicativa
  * relative agli oggetti di tipo Fruitore.
  * @author Marika
  *
@@ -27,7 +28,7 @@ public class FruitoreModel {
 
 
 /**
- * Metodo FruitoreModel è costituito da una lista attuali di fruitori, da un archivio
+ * Metodo FruitoreModel ï¿½ costituito da una lista attuali di fruitori, da un archivio
  * storico di fruitori e da una lista di prestiti.
  */
 	public FruitoreModel() {
@@ -52,7 +53,7 @@ public class FruitoreModel {
 //			id = Integer.toString(((int)(Math.random()*Constants.RANDOM)));
 //			flag = false;
 //			for(Fruitore fr : fruitori){
-//				if(fr.getId().equals(id)) {//controllo che l'id creato non sia già assegnato a un fruitore
+//				if(fr.getId().equals(id)) {//controllo che l'id creato non sia giï¿½ assegnato a un fruitore
 //					flag = true;
 //					break;
 //				}
@@ -66,7 +67,7 @@ public class FruitoreModel {
 	
 	public boolean controlloIdGiaEsistente(String id){
 		for(Fruitore fr : fruitori){
-			if(fr.getId().equals(id)&& id.equalsIgnoreCase(ConstantsCittadino.NOME_OPERATORE)) {//controllo che l'id creato non sia già assegnato a un fruitore
+			if(fr.getId().equals(id)&& id.equalsIgnoreCase(ConstantsCittadino.NOME_OPERATORE)) {//controllo che l'id creato non sia giï¿½ assegnato a un fruitore
 				return true;
 			}
 		}
@@ -79,43 +80,49 @@ public class FruitoreModel {
 	public void rimozioneFruitore(Fruitore f){
 
 		if(fruitori!=null && !fruitori.isEmpty()){//IS EMPTY RITORNA TRUE SE L'ELENCO E' VUOTO
-			fruitori.remove(f);  				//NULL-> SE ELENCO NON è STATO INIZIALIZZATO
+			fruitori.remove(f);  				//NULL-> SE ELENCO NON ï¿½ STATO INIZIALIZZATO
 		}
 	}
 
 	/**
 	 *Il metodo controlloScadenza permette di controllare, per ogni fruitore, la data di scadenza 
-	 *dell'iscrizione. Se la data è scaduta, il fruitore viene rimosso dall'elenco dei fruitori.
+	 *dell'iscrizione. Se la data ï¿½ scaduta, il fruitore viene rimosso dall'elenco dei fruitori.
 	 * @param d
 	 */
 	public void controlloScadenza(LocalDateTime d){
 		if( !fruitori.isEmpty()){//d data corrente in cui controllo
 
-			for(int i = fruitori.size()-1; i>=0; i--){//se la data scadenza è prima della data corrente -> data scadenza già scaduta e quindi  il fruitore viene eliminato dall'elenco
-				this.controlloScadenza(fruitori.get(i)); //specie extract method
+			Fruitore f;
+			for(int i = fruitori.size()-1; i>=0; i--){//se la data scadenza ï¿½ prima della data corrente -> data scadenza giï¿½ scaduta e quindi  il fruitore viene eliminato dall'elenco
+//				this.controlloScadenza(fruitori.get(i)); //specie extract method
+				f = fruitori.get(i);
+				if(Data.controlloDataNelPassato(f.getScadenzaIscrizione())) {
+					this.rimozioneFruitore(f);
+				}
 			}
 
 		} 
 	}
-/**
- * Metodo controlloScadenza necessario per il funzionamento del metodo controlloScadenza.
- * @param f
- * @return
- */
-	public boolean controlloScadenza(Fruitore f) {//dovrà essere richiamato in controllloScadenza per tutti 
-		LocalDateTime la = LocalDateTime.now();//METODO CONTROLLO SCADENZA PER TUTTI MODIFICATO
-		if (la.isAfter(f.getScadenzaIscrizione())) {
-			this.rimozioneFruitore(f);
-			return true;
-		}
-		return false;
-	}
+	
+///**
+// * Metodo controlloScadenza necessario per il funzionamento del metodo controlloScadenza.
+// * @param f
+// * @return
+// */
+//	public boolean controlloScadenza(Fruitore f) {//dovrï¿½ essere richiamato in controllloScadenza per tutti 
+//		LocalDateTime la = LocalDateTime.now();//METODO CONTROLLO SCADENZA PER TUTTI MODIFICATO
+//		if (la.isAfter(f.getScadenzaIscrizione())) {
+//			this.rimozioneFruitore(f);
+//			return true;
+//		}
+//		return false;
+//	}
 
 	
 	
 	/**
 	 * Il metodo controlloPresenzaFruitore controlla che l'id inserito dal fruitore sia presente nell'elenco dei fruitori.
-	 * 	Questo metodo è utilizzato ogni volta che il fruitore seleziona un'opzione dal menù.
+	 * 	Questo metodo ï¿½ utilizzato ogni volta che il fruitore seleziona un'opzione dal menï¿½.
 	 * @return
 	 */
 	public Fruitore controlloPresenzaFruitore(String valore){
@@ -133,7 +140,7 @@ public class FruitoreModel {
 	//POTREI METTERLO COME ACTION AZIONE RICHIESTA RINNOVO E TOGLIERLI DI QUA, FACCIO MENO RESPONSABILITA'
 //	/**	
 //	 * Il Metodo rinnovoFruitore permette di rinnovare l' iscrizione di un determinato fruitore,
-//	 * ovviamente se la richiesta di rinnovo è effettuata prima della scadenza dell'iscrizione e dopo
+//	 * ovviamente se la richiesta di rinnovo ï¿½ effettuata prima della scadenza dell'iscrizione e dopo
 //	 * un certo numero di giorni antecedenti la scadenza.
 //	 * @param f
 //	 */
@@ -154,7 +161,7 @@ public class FruitoreModel {
 // */
 //	public LocalDateTime tempoRinnovoFruitore(Fruitore f) {
 //		LocalDateTime la = LocalDateTime.now();
-//		if (la.isBefore(Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione()))) { //è possibile rinnovare da calcoloTerminiPrescritti in poi
+//		if (la.isBefore(Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione()))) { //ï¿½ possibile rinnovare da calcoloTerminiPrescritti in poi
 //			return Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione());
 //		}
 //		return null;

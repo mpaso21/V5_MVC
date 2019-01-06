@@ -24,7 +24,6 @@ public class OperatoreController extends CreatoreMenu {
 
 	 
 	MyMenu menuOperatore = crea();
-	private boolean uscita = false;
 	
 	private Controller mainManager;
 	private OperatoreView operatoreView ;
@@ -37,7 +36,7 @@ public class OperatoreController extends CreatoreMenu {
 
 
 	public void init(Operatore operatore)	{
-
+		boolean uscita = false;
 		do{
 			switch(menuOperatore.scegli()){
 			case 1:

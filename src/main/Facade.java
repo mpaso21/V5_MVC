@@ -4,14 +4,13 @@ package main;
 
 import controller.Controller;
 import controller.CreatoreMenu;
-
+import mylib.Constants;
 import mylib.MyMenu;
 
 
 public class Facade extends CreatoreMenu {
 
 	MyMenu menu = crea();
-	boolean uscita = false;
 
 	Controller controller;
 //	private FruitoreController fruitore;
@@ -40,7 +39,7 @@ public class Facade extends CreatoreMenu {
 ////																	//POICHE' PRESTITO ENTITY CONTROLLER FA RIF AI PRESTITI IN GENERALE, IL TIPO E' CONTENUTO IN RISORSA
 
 	public void init(){
-	
+		boolean uscita = false;
 		do{
 			switch(menu.scegli()){
 			case 1:

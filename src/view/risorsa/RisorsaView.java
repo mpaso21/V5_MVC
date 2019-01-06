@@ -59,9 +59,9 @@ public abstract class RisorsaView {
 
 
 	/**
-	 * Metodo stampaTutti è la mia vera stampa.
+	 * Metodo stampaTutti ï¿½ la mia vera stampa.
 	 * Metodo stampaTutti fornisce a video una rappresentazione della lista passata
-	 * per parametro. Se è vuota, stampa errore.
+	 * per parametro. Se ï¿½ vuota, stampa errore.
 	 * @param film
 	 */
 	public void stampaTutti(List<Risorsa> archivio) {
@@ -70,12 +70,19 @@ public abstract class RisorsaView {
 			stampaErroreArchivio();
 		}
 		else{
+			sb.append(intestazione());
 			String stringa = this.stampaConNumeri(archivio);
 			sb.append(stringa);
 			System.out.println(sb.toString());
 		}
 	}
-
+	
+	private String intestazione(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("%16s | %15s | %15s | %10s | %20s | %10s | %10s | %5s |\n" ,"TITOLO", "AUTORE/REGISTA", "PAGINE/DURATA", "ANNO", "CASA", "LINGUA", "GENERE", "LICENZE"));
+		return sb.toString(); 
+	}
+	
 	/**	
 	 * Metodo stampaConNumeri fornisce una rappresentazione sotto forma
 	 * di elenco puntato della Lista passata come parametro.
@@ -96,7 +103,7 @@ public abstract class RisorsaView {
 
 	/**
 	 * Metodo stampaRisorseTrovate fornisce a video una rappresentazione della 
-	 * lista passata per parametro. Se è vuota, stampa nessuna risorsa trovate.
+	 * lista passata per parametro. Se ï¿½ vuota, stampa nessuna risorsa trovate.
 	 * @param film
 	 */
 	public void stampaRisorseTrovate(List<Risorsa> risorseTrovate){

@@ -20,6 +20,7 @@ import entity.Fruitore;
 import entity.Libro;
 import entity.Risorsa;
 import mylib.ConstantsRisorsa;
+import mylib.Data;
 
 
 public class Test {
@@ -126,7 +127,7 @@ public class Test {
 		
 		controller.rinnovoIscrizione(f); //TEST SENZA MODIFICA
 		
-		assertTrue(controller.getFruitoreModel().controlloScadenza(f) == false);
+		assertTrue(Data.controlloDataNelPassato(f.getScadenzaIscrizione()) == false);
 	}
 	
 	@org.junit.Test

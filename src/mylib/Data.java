@@ -38,4 +38,12 @@ public class Data {
 	public static LocalDateTime menoMinuto(int m, LocalDateTime t){
 		return t.minusMinutes(m);
 	}
+	
+	public static boolean controlloDataNelPassato(LocalDateTime data) {
+		LocalDateTime la = LocalDateTime.now();//METODO CONTROLLO SCADENZA PER TUTTI MODIFICATO
+		if (la.isAfter(data)) {
+			return true;
+		}
+		return false;
+	}
 }

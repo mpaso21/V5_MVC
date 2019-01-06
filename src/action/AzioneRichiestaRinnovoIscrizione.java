@@ -22,8 +22,8 @@ public class AzioneRichiestaRinnovoIscrizione {
 		this.main = main;
 	}
 	/**
-	 * Metodo rinnovo controlla se è possibile rinnovare l'iscrizione del fruitore.
-	 * Per poter rinnovare l'iscrizione del fruitore è necessario che la richiesta non avvenga prima dei 
+	 * Metodo rinnovo controlla se ï¿½ possibile rinnovare l'iscrizione del fruitore.
+	 * Per poter rinnovare l'iscrizione del fruitore ï¿½ necessario che la richiesta non avvenga prima dei 
 	 * 10 giorni antecedenti la scandenza e non dopo la data di scadenza.
 	 * @param la
 	 * @param elenco
@@ -32,7 +32,9 @@ public class AzioneRichiestaRinnovoIscrizione {
 		FruitoreModel model = main.getFruitore().getFruitoreModel();
 		FruitoreView view = main.getFruitore().getFruitoreView();
 		
-		if(model.controlloScadenza(f)) { //EXTRACT METHOD + MOVE METHOD
+		
+		if(Data.controlloDataNelPassato(f.getScadenzaIscrizione())) { //EXTRACT METHOD + MOVE METHOD
+			model.rimozioneFruitore(f);
 			view.stampaFruitoreScaduto();
 		} 
 		else {
@@ -62,7 +64,7 @@ public class AzioneRichiestaRinnovoIscrizione {
 	
 	private LocalDateTime calcoloTempoRinnovoFruitore(Fruitore f) {
 		LocalDateTime la = LocalDateTime.now();
-		if (la.isBefore(Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione()))) { //è possibile rinnovare da calcoloTerminiPrescritti in poi
+		if (la.isBefore(Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione()))) { //ï¿½ possibile rinnovare da calcoloTerminiPrescritti in poi
 			return Data.menoMinuto(ConstantsCittadino.NUM_TEMPO_PRIMA_RINNOVO,f.getScadenzaIscrizione());
 		}
 		return null;

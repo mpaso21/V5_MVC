@@ -7,6 +7,7 @@ import action.AzioneRichiestaProroga;
 import action.AzioneRichiestaRinnovoIscrizione;
 import entity.Fruitore;
 import model.cittadino.FruitoreModel;
+import mylib.Data;
 import mylib.MyMenu;
 import view.cittadino.FruitoreView;
 
@@ -14,7 +15,6 @@ import view.cittadino.FruitoreView;
 public class FruitoreController  extends CreatoreMenu {
 
 	MyMenu menuFruitore = crea();
-	private boolean uscita = false;
 	
 	private Controller mainManager;
 	private FruitoreModel fruitoreModel;
@@ -28,6 +28,7 @@ public class FruitoreController  extends CreatoreMenu {
 	}
 
 	public void init(Fruitore f){
+		boolean uscita = false;
 		do{
 			switch(menuFruitore.scegli()){
 			case 1:
@@ -82,9 +83,10 @@ public class FruitoreController  extends CreatoreMenu {
 		if(f == null) {
 			fruitoreView.stampaFruitoreNonTrovato();
 		} else {
-			if(!fruitoreModel.controlloScadenza(f)) {			
+			if(! Data.controlloDataNelPassato(f.getScadenzaIscrizione())) {			
 				init(f);
 			} else {
+				fruitoreModel.rimozioneFruitore(f);
 				fruitoreView.stampaFruitoreScaduto();
 			}
 		}

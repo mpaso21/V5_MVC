@@ -24,7 +24,7 @@ public abstract class PrestitoView {
 
 	/**
 	 * Metodo stampaPrestito Fornisce una rappresentazione sotto forma di stringa
-	 * del prestito (contiene tutte le sue proprietà) e inoltre contiene il valore
+	 * del prestito (contiene tutte le sue proprietï¿½) e inoltre contiene il valore
 	 * dell'attributo proroga.
 	 * @param p
 	 * @return
@@ -72,13 +72,13 @@ public abstract class PrestitoView {
 
 	/**
 	 * Metodo stampa fornisce una rappresentazione del prestito.
-	 * Ciascun prestito è rappresentato  dal nome fruitore  e da una sequenza di 
-	 * proprietà proprie del prestito come la categoria di appartenenza,
+	 * Ciascun prestito ï¿½ rappresentato  dal nome fruitore  e da una sequenza di 
+	 * proprietï¿½ proprie del prestito come la categoria di appartenenza,
 	 * titolo, autore/regista, data inizio prestito, data fine prestito, proroga (si/no)
 	 */
 	public String stampa(Prestito p) {
 		StringBuilder sb = new StringBuilder();
-		sb.append( String.format(" %10s | ", p.getFruitore().getNome()) + stampaPrestito(p));
+		sb.append( String.format(" %13s | ", p.getFruitore().getNome()) + stampaPrestito(p));
 		return sb.toString();	
 	}
 	/**
@@ -88,7 +88,7 @@ public abstract class PrestitoView {
 	 */
 	private String stringaStoricoIntestazione(){
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format(" %10s | %7s | %14s | %15s | %20s | %20s | %3s |\n" ,"FRUITORE: ", "CATEGORIA", "TITOLO", "AUTORE/REGISTA", "INIZIO PRESTITO", "FINE PRESTITO", "PROROGA"));
+		sb.append(String.format(" %15s | %15s | %15s | %15s | %20s | %20s | %3s |\n" ,"FRUITORE: ", "TIPO", "TITOLO", "AUTORE/REGISTA", "INIZIO PRESTITO", "FINE PRESTITO", "PROROGA"));
 		return sb.toString(); 
 	}
 

@@ -4,15 +4,17 @@ import java.time.LocalDateTime;
 
 import builder.FilmBuilder;
 import entity.Film;
+import entity.Libro;
 import entity.Risorsa;
 import mylib.ConstantsRisorsa;
+import mylib.Data;
 import mylib.UtilitaControllo;
 import mylib.UtilitaCreazioneCampi;
 
 /**
  * La classe FilmView rappresenta l'Input/Output.
  * Mantiene tutte le stampe relative agli oggetti di tipo
- * Risorsa, più in specifico film. 
+ * Risorsa, piï¿½ in specifico film. 
  * Mantiene inoltre i metodi che contengono input presi dall'utente.
  * @author Marika
  *
@@ -58,7 +60,7 @@ public class FilmView extends RisorsaView{
 
 	/**
 	 * Metodo stampaFilm fornisce a video una rappresentazione contenente le 
-	 * proprietà della risorsa Film.
+	 * proprietï¿½ della risorsa Film.
 	 * @param f
 	 * @return
 	 */
@@ -66,23 +68,26 @@ public class FilmView extends RisorsaView{
 	public String  stampa(Risorsa f){
 		Film film = (Film)f;
 		StringBuilder stringa = new StringBuilder();
-		stringa.append("TITOLO: ")
-		.append(film.getNome())
-		.append("\n  REGISTA: ")
-		.append(film.getRegista() + " ")
-		.append("\n  DURATA: ")
-		.append(film.getDurata())
-		.append("\n  ANNO DI USCITA : ")
-		.append(film.getAnnoDiUscita())
-		.append("\n  CASA PRODUTTRICE: ")
-		.append(film.getCasaProduttrice())
-		.append("\n  LINGUA: ")
-		.append(film.getLingua())
-		.append("\n  GENERE: ")
-		.append(film.getGenere())
-		.append("\n  LICENZE D'USO: ")
-		.append(film.getNumeroLicenze());
-		return stringa.toString();	
+//		stringa.append("TITOLO: ")
+//		.append(film.getNome())
+//		.append("\n  REGISTA: ")
+//		.append(film.getRegista() + " ")
+//		.append("\n  DURATA: ")
+//		.append(film.getDurata())
+//		.append("\n  ANNO DI USCITA : ")
+//		.append(film.getAnnoDiUscita())
+//		.append("\n  CASA PRODUTTRICE: ")
+//		.append(film.getCasaProduttrice())
+//		.append("\n  LINGUA: ")
+//		.append(film.getLingua())
+//		.append("\n  GENERE: ")
+//		.append(film.getGenere())
+//		.append("\n  LICENZE D'USO: ")
+//		.append(film.getNumeroLicenze());
+//		return stringa.toString();
+		stringa.append(String.format("%14s | %15s | %15s | %10s | %20s | %10s | %10s | %7s |", film.getNome(), film.getRegista(),
+											film.getDurata(), film.getAnnoDiUscita(), film.getCasaProduttrice(), film.getLingua(), film.getGenere(), film.getNumeroLicenze() ));
+		return stringa.toString(); 
 
 	}
 

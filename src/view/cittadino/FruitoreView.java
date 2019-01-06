@@ -22,7 +22,7 @@ public class FruitoreView {
 
 	/**
 	 * Metodo creaFruitoreInput permette di creare un fruitore, prendendo in input i valori 
-	 * come nome e età necessari per creare il fruitore.
+	 * come nome e etï¿½ necessari per creare il fruitore.
 	 * @return
 	 */
 	public Fruitore creaFruitoreInput(){
@@ -63,9 +63,9 @@ public class FruitoreView {
  */
 	private void stampaIntestazioneFruitore(){
 		StringBuilder sb = new StringBuilder();
-		sb.append("-------------------------------------------------------------------------------------------\n")
+		sb.append(Constants.CORNICE + "\n")
 		.append(String.format("%10s | %15s | %5s | %20s | %20s\n" , "ID", "NOME", "ETA", "ISCRIZIONE", "SCADENZA"))
-		.append("-------------------------------------------------------------------------------------------\n");
+		.append(Constants.CORNICE + "\n");
 		System.out.println(sb.toString());
 	}
 	/**
@@ -114,7 +114,7 @@ public class FruitoreView {
 	}
 
 	public boolean messaggioIdGiaPresente() {
-		System.out.println("L'ID CHE HAI SCELTO è GIA PRESENTE!");
+		System.out.println("L'ID CHE HAI SCELTO ï¿½ GIA PRESENTE!");
 		return true;
 	}
 

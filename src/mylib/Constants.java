@@ -11,6 +11,10 @@ public class Constants { //COSTANTI GENERICHE
 	
 	public static final String NOME_CITTADINO = "INSERISCI IL TUO NOME: ";
 	
+	
+	public final static String CORNICE = "-----------------------------------------------------------------------------------";
+
+	
 
 
 	

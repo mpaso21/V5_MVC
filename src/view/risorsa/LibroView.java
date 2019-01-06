@@ -11,7 +11,7 @@ import mylib.UtilitaCreazioneCampi;
 /**
  * La classe LibroView rappresenta l'Input/Output.
  * Mantiene tutte le stampe relative agli oggetti di tipo
- * Risorsa, più in specifico libri.
+ * Risorsa, piï¿½ in specifico libri.
  * Mantiene inoltre i metodi che contengono input presi dall'utente.
  * @author Marika
  *
@@ -52,7 +52,7 @@ public class LibroView extends RisorsaView {
 	
 	/**
 	 * Metodo stampaLibro fornisce a video una rappresentazione contenente le 
-	 * proprietà della risorsa Libro.
+	 * proprietï¿½ della risorsa Libro.
 	 * @param f
 	 * @return
 	 */
@@ -60,24 +60,28 @@ public class LibroView extends RisorsaView {
 	public String stampa(Risorsa l) {
 		Libro libro = (Libro)l;
 		StringBuilder stringa = new StringBuilder();
-		stringa.append("TITOLO: ")
-		.append(libro.getNome())
-		.append("\n  AUTORE: ")
-		.append(libro.getAutore() + " ")
-		.append("\n  NUMERO DI PAGINE: ")
-		.append(libro.getNumeroPagine())
-		.append("\n  ANNO DI PUBBLICAZIONE: ")
-		.append(libro.getAnno())
-		.append("\n  CASA EDITRICE: ")
-		.append(libro.getCasaEditrice())
-		.append("\n  LINGUA: ")
-		.append(libro.getLingua())
-		.append("\n  GENERE: ")
-		.append(libro.getGenere())
-		.append("\n  LICENZE D'USO: ")
-		.append(libro.getNumeroLicenze());
+//		stringa.append("TITOLO: ")
+//		.append(libro.getNome())
+//		.append("\n  AUTORE: ")
+//		.append(libro.getAutore() + " ")
+//		.append("\n  NUMERO DI PAGINE: ")
+//		.append(libro.getNumeroPagine())
+//		.append("\n  ANNO DI PUBBLICAZIONE: ")
+//		.append(libro.getAnno())
+//		.append("\n  CASA EDITRICE: ")
+//		.append(libro.getCasaEditrice())
+//		.append("\n  LINGUA: ")
+//		.append(libro.getLingua())
+//		.append("\n  GENERE: ")
+//		.append(libro.getGenere())
+//		.append("\n  LICENZE D'USO: ")
+//		.append(libro.getNumeroLicenze());
+//
+//		return stringa.toString();
+		stringa.append(String.format("%14s | %15s | %15s | %10s | %20s | %10s | %10s | %7s |", libro.getNome(), libro.getAutore(),
+				libro.getNumeroPagine(), libro.getAnno(), libro.getCasaEditrice(), libro.getLingua(), libro.getGenere(), libro.getNumeroLicenze() ));
+		return stringa.toString(); 
 
-		return stringa.toString();	
 	}
 
 
